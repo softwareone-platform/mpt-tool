@@ -1,56 +1,30 @@
 services:
   app:
-    container_name: ext_playground
+    container_name: mpt_tool
     build:
       context: .
       dockerfile: prod.Dockerfile
-    working_dir: /extension
-    command: swoext run --no-color
+    working_dir: /mpt_tool
     volumes:
-      - .:/extension
-    env_file:
-      - .env
-    ports:
-      - "8080:8080"
-    expose:
-      - "8080"
-
-  bash:
-    container_name: ext_playground_bash
-    build:
-      context: .
-      dockerfile: dev.Dockerfile
-    working_dir: /extension
-    command: bash
-    stdin_open: true
-    tty: true
-    volumes:
-      - .:/extension
-    env_file:
-      - .env
+      - .:/mpt_tool
 
   app_test:
-    container_name: ext_playground_test
+    container_name: mpt_tool_test
     build:
       context: .
       dockerfile: dev.Dockerfile
-    working_dir: /extension
+    working_dir: /mpt_tool
     command: bash -c "ruff format --check . && ruff check . && flake8 . && mypy . && uv lock --check && pytest"
     volumes:
-      - .:/extension
-    environment:
-      - PROCESS_CHECK_INTERVAL_SECS=0
-    env_file:
-      - .env
+      - .:/mpt_tool
+
 
   format:
-    container_name: ext_playground_format
+    container_name: mpt_tool_format
     build:
       context: .
       dockerfile: dev.Dockerfile
-    working_dir: /extension
+    working_dir: /mpt_tool
     command: bash -c "ruff check --select I --fix . && ruff format ."
     volumes:
-      - .:/extension
-    env_file:
-      - .env
+      - .:/mpt_tool
