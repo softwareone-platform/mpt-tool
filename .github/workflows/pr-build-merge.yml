@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: "Checkout"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -30,7 +30,7 @@ jobs:
       run: docker compose build app_test
 
     - name: "Run validation & test"
-      run: docker compose run --service-ports app_test
+      run: docker compose run app_test
 
     - name: "Run SonarCloud Scan"
       uses: SonarSource/sonarqube-scan-action@master
