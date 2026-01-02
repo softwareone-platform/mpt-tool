@@ -1,14 +1,20 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 language: "en"
-tone_instructions: ''
+tone_instructions: |
+  When reviewing subsequent commits, always check if previous review comments have been addressed and acknowledge resolved issues.
 early_access: true
 enable_free_tier: true
 inheritance: true
 reviews:
   profile: "chill"
-  request_changes_workflow: false
+  request_changes_workflow: true
   high_level_summary: true
-  high_level_summary_instructions: ''
+  high_level_summary_instructions: |
+    Extract the Jira issue key from the PR title (format: MPT-XXXX).
+    Start the summary with: "Closes MPT-XXXX" where MPT-XXXX is replaced with the actual issue key found in the title.
+    Add a link: [MPT-XXXX](https://softwareone.atlassian.net/browse/MPT-XXXX)
+
+    Then generate concise release notes as a bullet-point list.
   high_level_summary_placeholder: '@coderabbitai summary'
   high_level_summary_in_walkthrough: false
   auto_title_placeholder: '@coderabbitai'
@@ -21,7 +27,7 @@ reviews:
   sequence_diagrams: false
   estimate_code_review_effort: true
   assess_linked_issues: true
-  related_issues: true
+  related_issues: false
   related_prs: true
   suggested_labels: false
   labeling_instructions: []
@@ -52,16 +58,53 @@ reviews:
       enabled: false
   pre_merge_checks:
     docstrings:
-      mode: 'off'
-      threshold: 80
-    title:
-      mode: warning
-      requirements: 'Title should include jira ticket number with prefix MPT-'
-    description:
-      mode: error
-    issue_assessment:
       mode: off
-    custom_checks: []
+    title:
+      mode: off
+    description:
+      mode: off
+    issue_assessment:
+      mode: warning
+    custom_checks:
+      - name: "Jira Issue Key in Title"
+        mode: "error"
+        instructions: |
+          Check if the PR title contains exactly one Jira issue key in the format MPT-XXXX.
+
+          If found:
+          - Post: ✅ Found Jira issue key in the title: [MPT-XXXX](https://softwareone.atlassian.net/browse/MPT-XXXX)
+          - Replace MPT-XXXX with the actual issue key found
+          - Mark the check as PASSED
+
+          If not found:
+          - Post: ⚠️ PR title must include exactly one Jira issue key in the format MPT-XXXX.
+          - Mark the check as FAILED
+      - name: "Test Coverage Required"
+        mode: "warning"
+        instructions: |
+          Check if the PR modifies any code files but does not include changes in the tests/ folder.
+
+          If code files are modified but no test files are changed:
+          - Count the number of code files modified
+          - Post: This PR modifies code (X file(s)) but does not include any changes in the tests/ folder. Please consider adding or updating tests to cover your changes.
+          - Replace X with the actual number of files
+          - Mark the check as FAILED
+
+          If test files are included or no code files are modified:
+          - Mark the check as PASSED
+      - name: "Single Commit Required"
+        mode: "warning"
+        instructions: |
+          Check if the PR contains more than one commit.
+
+          If the PR has more than one commit:
+          - Count the number of commits
+          - Post: ⚠️ This PR contains X commits. Please squash them into a single commit to keep the git history clean and easy to follow. Multiple commits are acceptable only in the following cases: One commit is a technical refactoring, and another introduces business logic changes. You are doing a complex multi-step refactoring (although in this case we still recommend splitting it into separate PRs).
+          - Replace X with the actual number of commits
+          - Mark the check as FAILED
+
+          If the PR has exactly one commit:
+          - Mark the check as PASSED
   tools:
     ast-grep:
       rule_dirs: []
@@ -170,14 +213,13 @@ knowledge_base:
     enabled: true
   code_guidelines:
     enabled: true
-    filePatterns:
-      - '.github/.instructions.md'
+    filePatterns: []  # Uses defaults including .github/copilot-instructions.md
   learnings:
     scope: auto
   issues:
     scope: auto
   jira:
-    usage: auto
+    usage: enabled
     project_keys:
       - MPT
   pull_requests:
