@@ -17,11 +17,15 @@ applyTo: '**/*.py'
 - Use consistent naming conventions and follow language-specific best practices.
 
 ## Python Instructions
-- Use type annotations (PEP 484).
+- Use type annotations (PEP 484) - except in the `tests/` folder.
 - All public functions, methods, and classes **must include [Google-style docstrings](https://google.github.io/styleguide/pyguide.html)**.
 - **Do not add inline comments**; rely on clear code and docstrings instead.
 - Function and variable names must be explicit and intention-revealing.
-- `pyproject.toml` is the source of truth for ruff and flake8 rules. Generated code must not violate those rules.
+- `pyproject.toml` is the source of truth for code quality rules. Generated code must not violate any configured rules.
+- **ruff** is the primary linter for general Python style and best practices.
+- **flake8** is used exclusively to run:
+  - `wemake-python-styleguide` - Enforces strict Python coding standards ([docs](https://wemake-python-styleguide.readthedocs.io/en/latest/))
+  - `flake8-aaa` - Validates the AAA pattern in tests
 - Follow PEP 8 unless explicitly overridden by ruff.
 - Prefer simple, explicit code over clever or compact implementations.
 
