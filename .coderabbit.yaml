@@ -39,7 +39,10 @@ reviews:
   enable_prompt_for_ai_agents: true
   path_filters:
       - "!.gitignore"
-  path_instructions: []
+  path_instructions:
+      - path: "**/*.py"
+        instructions: |
+          Do not suggest formatting changes or mention code formatting using Black. Instead use Ruff or Flake8
   abort_on_close: true
   disable_cache: false
   auto_review:
@@ -49,7 +52,7 @@ reviews:
     labels: []
     drafts: false
     base_branches:
-      - release/*
+      - '.*'
     ignore_usernames: []
   finishing_touches:
     docstrings:
