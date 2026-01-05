@@ -19,19 +19,29 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: ".python-version"
+
+    - name: "Install uv"
+      uses: astral-sh/setup-uv@v7
+      with:
+        version: "0.7.*"
+        enable-cache: true
+        cache-dependency-glob: uv.lock
+
     - name: "Get the version"
       id: get_version
       run: echo  "VERSION=${GITHUB_REF/refs\/tags\//}" >> "$GITHUB_OUTPUT"
 
-    - name: "Build and push image"
-      uses: azure/docker-login@v2
-      with:
-        login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
-    - run: |
-        docker build -f prod.Dockerfile -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mpt-tool:${{ steps.get_version.outputs.VERSION }} .
-        docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mpt-tool:${{ steps.get_version.outputs.VERSION }}
+    - name: "Build"
+      run: |
+        uv version ${{ steps.get_version.outputs.VERSION }}
+        uv build
+
+    - name: "Publish to PyPI"
+      run: uv publish
 
   dtrack:
     uses: softwareone-platform/ops-template/.github/workflows/dependency-track-python-uv.yml@v2
