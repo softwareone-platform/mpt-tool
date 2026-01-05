@@ -42,12 +42,9 @@ reviews:
       - path: "**/*.py"
         instructions: |
           Do not suggest formatting changes or mention code formatting using Black. Instead use Ruff or Flake8
-<<<<<<< HEAD
       - path: "**/*"
         instructions: |
           When reviewing subsequent commits, always check if previous review comments have been addressed and acknowledge resolved issues.
-=======
->>>>>>> 4f8ded0 (feat: add instructions and coderabbit yaml)
   abort_on_close: true
   disable_cache: false
   auto_review:
