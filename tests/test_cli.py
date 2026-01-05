@@ -17,8 +17,8 @@ def test_migrate_command(runner):
 
 
 def test_help(runner):
-    result = runner.invoke(app, ["--help"])
+    help_command = runner.invoke(app, ["--help"])
 
-    assert result.exit_code == 0
-    assert "MPT CLI - Migration tool for extensions." in result.output
-    assert "migrate" in result.output
+    assert help_command.exit_code == 0
+    assert "MPT CLI - Migration tool for extensions." in help_command.output
+    assert "migrate" in help_command.output

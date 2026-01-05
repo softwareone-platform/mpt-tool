@@ -57,7 +57,7 @@ reviews:
     labels: []
     drafts: false
     base_branches:
-      - release/*
+      - '.*'
     ignore_usernames: []
   finishing_touches:
     docstrings:
