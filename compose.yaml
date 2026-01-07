@@ -1,0 +1,9 @@
+services:
+  app:
+    container_name: mpt_tool
+    build:
+      context: .
+      target: dev
+    working_dir: /mpt_tool
+    volumes:
+      - .:/mpt_tool
