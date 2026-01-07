@@ -1,13 +1,19 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim AS base
 
-COPY . /mpt_tool
 WORKDIR /mpt_tool
 
+COPY pyproject.toml uv.lock ./
 RUN uv venv /opt/venv
 
 ENV VIRTUAL_ENV=/opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 
+FROM base AS build
+
+COPY . /mpt_tool
+
 RUN uv sync --frozen --no-cache --all-groups --active
+
+FROM build AS dev
 
 CMD ["bash"]
