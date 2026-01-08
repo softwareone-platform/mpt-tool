@@ -1,37 +1,12 @@
+import datetime as dt
 from pathlib import Path
 
 import typer
 
+from mpt_tool.constants import MIGRATION_FOLDER
+from mpt_tool.templates import MIGRATION_SCAFFOLDING_TEMPLATE
+
 app = typer.Typer(help="MPT CLI - Migration tool for extensions.", no_args_is_help=True)
-
-
-@app.command()
-def init() -> None:
-    """Initialize the migrations tool workspace."""
-    root = Path.cwd()
-
-    settings_file = root / "settings.py"
-    if not settings_file.exists():
-        typer.secho("Settings file does not exist.", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
-
-    migrations_dir = root / "migrations"
-    if migrations_dir.exists():
-        typer.secho("Migrations folder already exists.", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
-
-    migrations_dir.mkdir(exist_ok=True)
-
-    init_file = migrations_dir / "__init__.py"
-    init_file.touch(exist_ok=True)
-
-    state_file = root / ".migrations-state.json"
-    if state_file.exists():
-        typer.secho("State file already exists.", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
-
-    if not state_file.exists():
-        state_file.write_text("{}\n")
 
 
 @app.callback()
@@ -39,10 +14,53 @@ def callback() -> None:
     """MPT CLI - Migration tool for extensions."""
 
 
-@app.command()
-def migrate() -> None:
-    """Run the migration process."""
-    typer.echo("Hello World!")
+@app.command("migrate")
+def migrate(
+    new_data: str | None = typer.Option(  # noqa: WPS404
+        None,
+        "--new-data",
+        metavar="FILENAME",
+        help="Scaffold a new data migration script with the provided filename.",
+    ),
+    new_schema: str | None = typer.Option(  # noqa: WPS404
+        None,
+        "--new-schema",
+        metavar="FILENAME",
+        help="Scaffold a new schema migration script with the provided filename.",
+    ),
+) -> None:
+    """Migrate command."""
+    if new_data and new_schema:
+        raise typer.BadParameter(
+            "Options --new-data and --new-schema cannot be combined.",
+            param_hint="migrate",
+        )
+
+    if new_schema or new_data:
+        filename_suffix = new_data or new_schema
+        typer.echo(f"Scaffolding migration: {filename_suffix}.")
+        migration_folder = Path(MIGRATION_FOLDER)
+        migration_folder.mkdir(parents=True, exist_ok=True)
+        timestamp = dt.datetime.now(tz=dt.UTC).strftime("%Y%m%d%H%M%S")
+        # TODO: add filename validation
+        filename = f"{timestamp}_{filename_suffix}.py"
+        full_filename_path = migration_folder / filename
+        try:
+            full_filename_path.touch(exist_ok=False)
+        except FileExistsError:
+            typer.secho(f"File already exists: {filename}", fg=typer.colors.RED)
+            raise typer.Abort
+
+        full_filename_path.write_text(
+            encoding="utf-8",
+            data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(
+                command_name="DataBaseCommand" if new_data else "SchemaBaseCommand"
+            ),
+        )
+        typer.secho(f"Migration file: {filename} has been created.", fg=typer.colors.GREEN)
+        return
+
+    typer.secho("Running migrations is not implemented yet.", fg=typer.colors.YELLOW)
 
 
 def main() -> None:
