@@ -1,6 +1,5 @@
 services:
   app:
-    container_name: mpt_tool
     build:
       context: .
       target: dev
