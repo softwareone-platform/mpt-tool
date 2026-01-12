@@ -7,7 +7,7 @@ help:
 	@echo "  make bash             - Open a bash shell in the app container."
 	@echo "  make build            - Build images."
 	@echo "  make check            - Check code quality with ruff."
-	@echo "  make check-all        - Run check and tests."
+	@echo "  make check-all        - Run checks and tests."
 	@echo "  make down             - Stop and remove containers."
 	@echo "  make format           - Format code."
 	@echo "  make review           - Check the code in the cli by running CodeRabbit."
@@ -41,4 +41,4 @@ run:
 	  $(DC) run --rm -it app bash -c "mpt-tool --help && exec bash"
 
 test:
-	  $(DC) run --rm app pytest $(args) .
+	  $(DC) run --rm app pytest $(if $(args),$(args),.)
