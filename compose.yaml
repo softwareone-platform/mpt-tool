@@ -4,6 +4,5 @@ services:
     build:
       context: .
       target: dev
-    working_dir: /mpt_tool
     volumes:
       - .:/mpt_tool

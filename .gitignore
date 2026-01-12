@@ -166,3 +166,8 @@ cython_debug/
 .DS_Store
 .ruff_cache
 .idea
+
+# Specific project gitignore
+migrations
+.migrations-state.json
+settings.py
