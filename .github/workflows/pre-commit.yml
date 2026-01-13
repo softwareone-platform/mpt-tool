@@ -1,0 +1,27 @@
+name: Update pre-commit hooks
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "uv.lock"
+
+jobs:
+  pre-commit-hooks-update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: "Setup Python"
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.x
+
+    # Use the default name. The application uses this to find the right workflow.
+    - uses: pre-commit-ci/lite-action@v1.1.0
