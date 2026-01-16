@@ -64,6 +64,17 @@ class MigrationFile:
     order_id: int
 
     @property
+    def file_name(self) -> str:
+        """Migration file name."""
+        return f"{self.order_id}_{self.migration_id}.py"
+
+    def __post_init__(self):
+        if not self.migration_id.isidentifier():
+            raise ValueError(
+                "Migration ID must contain only alphanumeric letters and numbers, or underscores."
+            )
+
+    @property
     def name(self) -> str:
         """Migration file name."""
         return f"{self.order_id}_{self.migration_id}"
@@ -77,3 +88,15 @@ class MigrationFile:
         """
         order_id, migration_id = path.stem.split("_", maxsplit=1)
         return cls(full_path=path, order_id=int(order_id), migration_id=migration_id)
+
+    @classmethod
+    def new(cls, migration_id: str, path: Path) -> Self:
+        """Create a new migration file.
+
+        Args:
+            migration_id: The migration ID.
+            path: The path to the migration folder.
+        """
+        timestamp = dt.datetime.now(tz=dt.UTC).strftime("%Y%m%d%H%M%S")
+        full_path = path / f"{timestamp}_{migration_id}.py"
+        return cls(full_path=full_path, migration_id=migration_id, order_id=int(timestamp))
