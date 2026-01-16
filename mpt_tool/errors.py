@@ -9,8 +9,16 @@ class BaseError(Exception):
         super().__init__(message)
 
 
+class CreateMigrationError(BaseError):
+    """Error creating the migration file."""
+
+
 class LoadMigrationError(BaseError):
     """Error loading migrations."""
+
+
+class NewMigrationError(BaseError):
+    """Error creating new migration."""
 
 
 class MigrationFolderError(BaseError):

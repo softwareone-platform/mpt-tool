@@ -1,15 +1,12 @@
-import datetime as dt
 import logging
-from pathlib import Path
-from typing import Annotated
+from typing import Annotated, cast
 
 import typer
 
-from mpt_tool.constants import MIGRATION_FOLDER
 from mpt_tool.enums import MigrationTypeEnum
-from mpt_tool.errors import RunMigrationError
-from mpt_tool.templates import MIGRATION_SCAFFOLDING_TEMPLATE
+from mpt_tool.errors import NewMigrationError, RunMigrationError
 from mpt_tool.use_cases import RunMigrationsUseCase
+from mpt_tool.use_cases.new_migration import NewMigrationUseCase
 
 app = typer.Typer(help="MPT CLI - Migration tool for extensions.", no_args_is_help=True)
 
@@ -20,7 +17,7 @@ def callback() -> None:
 
 
 @app.command("migrate")
-def migrate(  # noqa: C901, WPS238, WPS210, WPS213, WPS231
+def migrate(  # noqa: C901, WPS238, WPS231
     data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # noqa: FBT002
     schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # noqa: FBT002
     new_data: Annotated[
@@ -63,25 +60,14 @@ def migrate(  # noqa: C901, WPS238, WPS210, WPS213, WPS231
 
     if new_schema or new_data:
         filename_suffix = new_data or new_schema
+        migration_type = MigrationTypeEnum.DATA if new_data else MigrationTypeEnum.SCHEMA
         typer.echo(f"Scaffolding migration: {filename_suffix}.")
-        migration_folder = Path(MIGRATION_FOLDER)
-        migration_folder.mkdir(parents=True, exist_ok=True)
-        timestamp = dt.datetime.now(tz=dt.UTC).strftime("%Y%m%d%H%M%S")
-        # TODO: add filename validation
-        filename = f"{timestamp}_{filename_suffix}.py"
-        full_filename_path = migration_folder / filename
         try:
-            full_filename_path.touch(exist_ok=False)
-        except FileExistsError:
-            typer.secho(f"File already exists: {filename}", fg=typer.colors.RED)
+            filename = NewMigrationUseCase().execute(migration_type, cast(str, filename_suffix))
+        except NewMigrationError as error:
+            typer.secho(f"Error creating migration: {error!s}", fg=typer.colors.RED)
             raise typer.Abort
 
-        full_filename_path.write_text(
-            encoding="utf-8",
-            data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(
-                command_name="DataBaseCommand" if new_data else "SchemaBaseCommand"
-            ),
-        )
         typer.secho(f"Migration file: {filename} has been created.", fg=typer.colors.GREEN)
 
 

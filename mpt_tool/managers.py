@@ -8,8 +8,14 @@ from typing import Any, override
 
 from mpt_tool.constants import MIGRATION_FOLDER, MIGRATION_STATE_FILE
 from mpt_tool.enums import MigrationTypeEnum
-from mpt_tool.errors import LoadMigrationError, MigrationFolderError, StateNotFoundError
+from mpt_tool.errors import (
+    CreateMigrationError,
+    LoadMigrationError,
+    MigrationFolderError,
+    StateNotFoundError,
+)
 from mpt_tool.models import Migration, MigrationFile
+from mpt_tool.templates import MIGRATION_SCAFFOLDING_TEMPLATE
 
 
 class FileMigrationManager:
@@ -18,13 +24,13 @@ class FileMigrationManager:
     _migration_folder: Path = Path(MIGRATION_FOLDER)
 
     @classmethod
-    def validate(cls) -> tuple[MigrationFile, ...]:
+    def validate(cls) -> tuple[MigrationFile, ...]:  # noqa: WPS238
         """Validates the migration folder and returns a tuple of migration files."""
         if not cls._migration_folder.exists():
             raise MigrationFolderError(f"Migration folder not found: {cls._migration_folder}")
 
-        migrations = tuple(
-            sorted(
+        try:
+            migrations = sorted(
                 (
                     MigrationFile.build_from_path(path)
                     for path in cls._migration_folder.glob("*.py")
@@ -32,7 +38,9 @@ class FileMigrationManager:
                 ),
                 key=lambda migration_file: migration_file.order_id,
             )
-        )
+        except ValueError as error:
+            raise MigrationFolderError(str(error)) from None
+
         if not migrations:
             raise MigrationFolderError(f"No migration files found in {cls._migration_folder}")
 
@@ -43,7 +51,7 @@ class FileMigrationManager:
                 f"Duplicate migration filename found: {duplicated_migrations[0]}"
             )
 
-        return migrations
+        return tuple(migrations)
 
     @classmethod
     def load_migration(cls, migration_file: MigrationFile) -> ModuleType:
@@ -62,6 +70,32 @@ class FileMigrationManager:
         migration_module = module_from_spec(spec)
         spec.loader.exec_module(migration_module)
         return migration_module
+
+    @classmethod
+    def new_migration(cls, file_suffix: str, migration_type: MigrationTypeEnum) -> MigrationFile:
+        """Creates a new migration file."""
+        cls._migration_folder.mkdir(parents=True, exist_ok=True)
+        try:
+            migration_file = MigrationFile.new(migration_id=file_suffix, path=cls._migration_folder)
+        except ValueError as error:
+            raise CreateMigrationError(f"Invalid migration ID: {error}") from error
+
+        try:
+            migration_file.full_path.touch(exist_ok=False)
+        except FileExistsError as error:
+            raise CreateMigrationError(
+                f"File already exists: {migration_file.file_name}"
+            ) from error
+
+        migration_file.full_path.write_text(
+            encoding="utf-8",
+            data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(
+                command_name="DataBaseCommand"
+                if migration_type == MigrationTypeEnum.DATA
+                else "SchemaBaseCommand"
+            ),
+        )
+        return migration_file
 
 
 class StateJSONEncoder(json.JSONEncoder):
