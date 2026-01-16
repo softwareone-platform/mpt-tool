@@ -22,7 +22,7 @@ build:
 	  $(DC) build
 
 check:
-	  $(DC) run --rm app bash -c "ruff format --check . && ruff check . && flake8 . && uv lock --check"
+	  $(DC) run --rm app bash -c "ruff format --check . && ruff check . && flake8 . && mypy . && uv lock --check"
 
 check-all:
 	  $(MAKE) check
@@ -38,7 +38,7 @@ review:
 	  coderabbit review --prompt-only
 
 run:
-	  $(DC) run --rm -it app bash -c "mpt-tool --help && exec bash"
+	  $(DC) run --rm -it app bash -c "mpt-tool migrate --help && exec bash"
 
 test:
 	  $(DC) run --rm app pytest $(if $(args),$(args),.)
