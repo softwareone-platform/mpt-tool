@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Self
 
+from mpt_tool.constants import MAX_LEN_MIGRATION_ID
 from mpt_tool.enums import MigrationTypeEnum
 
 
@@ -69,6 +70,10 @@ class MigrationFile:
         return f"{self.order_id}_{self.migration_id}.py"
 
     def __post_init__(self):
+        if len(self.migration_id) >= MAX_LEN_MIGRATION_ID:
+            raise ValueError(
+                f"Migration ID must be less than {MAX_LEN_MIGRATION_ID} characters long."
+            )
         if not self.migration_id.isidentifier():
             raise ValueError(
                 "Migration ID must contain only alphanumeric letters and numbers, or underscores."
