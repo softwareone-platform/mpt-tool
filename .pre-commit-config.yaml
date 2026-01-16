@@ -36,3 +36,5 @@ repos:
         pass_filenames: false
         additional_dependencies:
           - typer
+          - mpt_api_client
+          - pyairtable
