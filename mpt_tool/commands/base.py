@@ -11,7 +11,7 @@ class BaseCommand(ABC):
 
     _type: MigrationTypeEnum
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.log = logger
 
     @property

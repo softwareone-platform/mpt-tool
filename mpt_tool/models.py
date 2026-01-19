@@ -42,11 +42,11 @@ class Migration:
             "applied_at": self.applied_at.isoformat() if self.applied_at else None,
         }
 
-    def applied(self):
+    def applied(self) -> None:
         """Mark the migration as applied."""
         self.applied_at = dt.datetime.now(tz=dt.UTC)
 
-    def failed(self):
+    def failed(self) -> None:
         """Mark the migration as failed."""
         self.started_at = None
         self.applied_at = None
@@ -69,7 +69,7 @@ class MigrationFile:
         """Migration file name."""
         return f"{self.order_id}_{self.migration_id}.py"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if len(self.migration_id) >= MAX_LEN_MIGRATION_ID:
             raise ValueError(
                 f"Migration ID must be less than {MAX_LEN_MIGRATION_ID} characters long."
