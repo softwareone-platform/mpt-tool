@@ -195,5 +195,6 @@ convention = "google"
 ]
 
 [tool.mypy]
+exclude_gitignore = true
 warn_no_return = false
 exclude = ["tests"]
