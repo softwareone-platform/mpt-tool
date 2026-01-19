@@ -2,10 +2,13 @@ import logging
 from typing import Annotated, cast
 
 import typer
+from rich.console import Console
 
 from mpt_tool.enums import MigrationTypeEnum
 from mpt_tool.errors import NewMigrationError, RunMigrationError
+from mpt_tool.renders import MigrationRender
 from mpt_tool.use_cases import RunMigrationsUseCase
+from mpt_tool.use_cases.list_migrations import ListMigrationsUseCase
 from mpt_tool.use_cases.new_migration import NewMigrationUseCase
 
 app = typer.Typer(help="MPT CLI - Migration tool for extensions.", no_args_is_help=True)
@@ -17,7 +20,7 @@ def callback() -> None:
 
 
 @app.command("migrate")
-def migrate(  # noqa: C901, WPS238, WPS231
+def migrate(  # noqa: C901, WPS210, WPS213, WPS238, WPS231
     data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # noqa: FBT002
     schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # noqa: FBT002
     new_data: Annotated[
@@ -36,9 +39,10 @@ def migrate(  # noqa: C901, WPS238, WPS231
             help="Scaffold a new schema migration script with the provided filename.",
         ),
     ] = None,
+    list: Annotated[bool, typer.Option("--list", help="List all migrations.")] = False,  # noqa: A002, FBT002
 ) -> None:
     """Migrate command."""
-    options = sum([bool(data), bool(schema), bool(new_data), bool(new_schema)])  # noqa: WPS221
+    options = sum([bool(data), bool(schema), bool(new_data), bool(new_schema), bool(list)])  # noqa: WPS221
     if options > 1:
         raise typer.BadParameter("Only one option can be used.", param_hint="migrate")
     if not options:
@@ -69,6 +73,18 @@ def migrate(  # noqa: C901, WPS238, WPS231
             raise typer.Abort
 
         typer.secho(f"Migration file: {filename} has been created.", fg=typer.colors.GREEN)
+        return
+
+    if list:
+        typer.echo("Listing migrations...")
+        state_data = ListMigrationsUseCase().execute()
+        if not state_data:
+            typer.echo("No migrations found.")
+            return
+
+        console = Console()
+        # TODO: check console render -> https://rich.readthedocs.io/en/stable/protocol.html#console-render
+        console.print(MigrationRender.table(state_data), overflow="fold")
 
 
 def main() -> None:

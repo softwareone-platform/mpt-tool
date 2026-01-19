@@ -212,3 +212,35 @@ def test_migrate_command_file_already_exists(migration_folder, runner):
     assert result.exit_code == 1, result.output
     assert f"File already exists: 20250406122134_{migration_filename}" in result.output
     assert result.stderr == "Aborted.\n"
+
+
+@pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
+def test_migrate_list(migration_state_file, runner, log):
+    applied_state_data = {
+        "fake_data_file_name": {
+            "migration_id": "fake_data_file_name",
+            "order_id": 20250406020202,
+            "type": "data",
+            "started_at": "2025-04-06T13:00:00+00:00",
+            "applied_at": "2025-04-06T13:00:00+00:00",
+        }
+    }
+    migration_state_file.write_text(data=json.dumps(applied_state_data))
+
+    result = runner.invoke(app, ["migrate", "--list"])
+
+    assert result.exit_code == 0, result.output
+    assert "No state found for migration: fake_schema_file_name" in log.text
+    formatted_output = "".join(result.output.split())
+    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃" in formatted_output
+    assert (
+        "│20250406020202│fake_data_file…│2025-04-06T13:…│2025-04-06T13:0…│data│" in formatted_output
+    )
+    assert "│20260101010101│fake_schema_fi…││││" in formatted_output
+
+
+def test_migrate_list_no_migrations(runner):
+    result = runner.invoke(app, ["migrate", "--list"])
+
+    assert result.exit_code == 0, result.output
+    assert "No migrations found." in result.output

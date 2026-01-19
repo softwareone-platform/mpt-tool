@@ -24,36 +24,6 @@ class FileMigrationManager:
     _migration_folder: Path = Path(MIGRATION_FOLDER)
 
     @classmethod
-    def validate(cls) -> tuple[MigrationFile, ...]:  # noqa: WPS238
-        """Validates the migration folder and returns a tuple of migration files."""
-        if not cls._migration_folder.exists():
-            raise MigrationFolderError(f"Migration folder not found: {cls._migration_folder}")
-
-        try:
-            migrations = sorted(
-                (
-                    MigrationFile.build_from_path(path)
-                    for path in cls._migration_folder.glob("*.py")
-                    if re.match(r"\d+_.*\.py", path.name)
-                ),
-                key=lambda migration_file: migration_file.order_id,
-            )
-        except ValueError as error:
-            raise MigrationFolderError(str(error)) from None
-
-        if not migrations:
-            raise MigrationFolderError(f"No migration files found in {cls._migration_folder}")
-
-        counter = Counter([migration.migration_id for migration in migrations])
-        duplicated_migrations = [element for element, count in counter.items() if count > 1]
-        if duplicated_migrations:
-            raise MigrationFolderError(
-                f"Duplicate migration filename found: {duplicated_migrations[0]}"
-            )
-
-        return tuple(migrations)
-
-    @classmethod
     def load_migration(cls, migration_file: MigrationFile) -> ModuleType:
         """Loads a migration module from a migration file.
 
@@ -96,6 +66,46 @@ class FileMigrationManager:
             ),
         )
         return migration_file
+
+    @classmethod
+    def retrieve_migration_files(cls) -> tuple[MigrationFile, ...]:
+        """Retrieves all migration files."""
+        return cls._get_migration_files()
+
+    @classmethod
+    def validate(cls) -> tuple[MigrationFile, ...]:
+        """Validates the migration folder and returns a tuple of migration files."""
+        if not cls._migration_folder.exists():
+            raise MigrationFolderError(f"Migration folder not found: {cls._migration_folder}")
+
+        migrations = cls._get_migration_files()
+        if not migrations:
+            raise MigrationFolderError(f"No migration files found in {cls._migration_folder}")
+
+        counter = Counter([migration.migration_id for migration in migrations])
+        duplicated_migrations = [element for element, count in counter.items() if count > 1]
+        if duplicated_migrations:
+            raise MigrationFolderError(
+                f"Duplicate migration filename found: {duplicated_migrations[0]}"
+            )
+
+        return migrations
+
+    @classmethod
+    def _get_migration_files(cls) -> tuple[MigrationFile, ...]:
+        try:
+            migrations = sorted(
+                (
+                    MigrationFile.build_from_path(path)
+                    for path in cls._migration_folder.glob("*.py")
+                    if re.match(r"\d+_.*\.py", path.name)
+                ),
+                key=lambda migration_file: migration_file.order_id,
+            )
+        except ValueError as error:
+            raise MigrationFolderError(str(error)) from None
+
+        return tuple(migrations)
 
 
 class StateJSONEncoder(json.JSONEncoder):
