@@ -1,6 +1,7 @@
 from mpt_tool.enums import MigrationTypeEnum
-from mpt_tool.errors import CreateMigrationError, NewMigrationError
 from mpt_tool.managers import FileMigrationManager
+from mpt_tool.managers.errors import CreateMigrationError
+from mpt_tool.use_cases.errors import NewMigrationError
 
 
 class NewMigrationUseCase:
