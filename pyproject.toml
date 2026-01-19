@@ -26,7 +26,7 @@ dev = [
   "pre-commit==4.5.*",
   "pytest==9.0.*",
   "pytest-cov==7.0.*",
-  "pytest-deadfixtures==3.0.*",
+  "pytest-deadfixtures==3.1.*",
   "pytest-mock==3.15.*",
   "ruff==0.14.*",
   "wemake-python-styleguide==1.5.*",
