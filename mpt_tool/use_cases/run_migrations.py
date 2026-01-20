@@ -1,14 +1,10 @@
 import logging
 
 from mpt_tool.enums import MigrationTypeEnum
-from mpt_tool.errors import (
-    LoadMigrationError,
-    MigrationFolderError,
-    RunMigrationError,
-    StateNotFoundError,
-)
 from mpt_tool.managers import FileMigrationManager, FileStateManager
+from mpt_tool.managers.errors import LoadMigrationError, MigrationFolderError, StateNotFoundError
 from mpt_tool.models import Migration
+from mpt_tool.use_cases.errors import RunMigrationError
 
 logger = logging.getLogger(__name__)
 
@@ -40,13 +36,8 @@ class RunMigrationsUseCase:
 
         for migration_file in migration_files:
             try:
-                migration = self.file_migration_manager.load_migration(migration_file)
+                migration_instance = self.file_migration_manager.load_migration(migration_file)
             except LoadMigrationError as error:
-                raise RunMigrationError(str(error)) from error
-
-            try:
-                migration_instance = migration.Command()
-            except Exception as error:
                 raise RunMigrationError(str(error)) from error
 
             if migration_instance.type != migration_type:
@@ -63,6 +54,8 @@ class RunMigrationsUseCase:
             state.start()
             try:
                 migration_instance.run()
+            # We catch all exceptions here to ensure the state is updated
+            # and the flow is not interrupted abruptly
             except Exception as error:
                 state.failed()
                 self.state_manager.save_state(state)
