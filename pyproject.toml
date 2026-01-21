@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "Migration tool for extensions"
 authors = [{ name = "SoftwareOne AG" }]
 requires-python = ">=3.12,<4"
-readme = "README.md"
+readme = "docs/PROJECT_DESCRIPTION.md"
 license = {text = "Apache-2.0 license"}
 
 dependencies = [
@@ -33,7 +33,6 @@ dev = [
   "ruff==0.14.*",
   "wemake-python-styleguide==1.5.*",
 ]
-runtime = []
 
 [build-system]
 requires = ["hatchling"]
