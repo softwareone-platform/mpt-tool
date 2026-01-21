@@ -4,10 +4,10 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from typing import cast
 
-from mpt_tool.commands.base import BaseCommand
 from mpt_tool.constants import MIGRATION_FOLDER
 from mpt_tool.enums import MigrationTypeEnum
 from mpt_tool.managers.errors import CreateMigrationError, LoadMigrationError, MigrationFolderError
+from mpt_tool.migration.base import BaseMigration
 from mpt_tool.models import MigrationFile
 from mpt_tool.templates import MIGRATION_SCAFFOLDING_TEMPLATE
 
@@ -18,7 +18,7 @@ class FileMigrationManager:
     _migration_folder: Path = Path(MIGRATION_FOLDER)
 
     @classmethod
-    def load_migration(cls, migration_file: MigrationFile) -> BaseCommand:
+    def load_migration(cls, migration_file: MigrationFile) -> BaseMigration:
         """Loads a migration instance from a migration file.
 
         Args:
@@ -41,9 +41,9 @@ class FileMigrationManager:
             raise LoadMigrationError(f"Failed to import migration module: {error!s}") from error
 
         try:
-            migration_instance = cast(BaseCommand, migration_module.Command())
+            migration_instance = cast(BaseMigration, migration_module.Migration())
         except (TypeError, AttributeError) as error:
-            raise LoadMigrationError(f"Invalid migration Command: {error!s}") from error
+            raise LoadMigrationError(f"Invalid migration: {error!s}") from error
 
         return migration_instance
 
@@ -77,9 +77,9 @@ class FileMigrationManager:
         migration_file.full_path.write_text(
             encoding="utf-8",
             data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(
-                command_name="DataBaseCommand"
+                migration_name="DataBaseMigration"
                 if migration_type == MigrationTypeEnum.DATA
-                else "SchemaBaseCommand"
+                else "SchemaBaseMigration"
             ),
         )
         return migration_file

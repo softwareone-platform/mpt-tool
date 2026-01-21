@@ -1,6 +1,6 @@
 import pytest
 
-from mpt_tool.commands.mixins import MPTAPIClientMixin
+from mpt_tool.migration.mixins import MPTAPIClientMixin
 
 
 def test_mpt_client_mixin():

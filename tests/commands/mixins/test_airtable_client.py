@@ -1,6 +1,6 @@
 import pytest
 
-from mpt_tool.commands.mixins import AirtableAPIClientMixin
+from mpt_tool.migration.mixins import AirtableAPIClientMixin
 
 
 def test_airtable_client():

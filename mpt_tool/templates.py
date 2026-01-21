@@ -1,10 +1,10 @@
 from string import Template
 
 MIGRATION_SCAFFOLDING_FILE_TEXT = """\
-from mpt_tool.commands import $command_name
+from mpt_tool.migration import $migration_name
 
 
-class Command($command_name):
+class Migration($migration_name):
     def run(self):
         # implement your logic here
         pass

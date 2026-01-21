@@ -1,4 +1,4 @@
-from mpt_tool.commands.data_base import DataBaseCommand
-from mpt_tool.commands.schema_base import SchemaBaseCommand
+from mpt_tool.commands.factory import CommandFactory
+from mpt_tool.commands.validators import MigrateCommandValidator
 
-__all__ = ["DataBaseCommand", "SchemaBaseCommand"]
+__all__ = ["CommandFactory", "MigrateCommandValidator"]
