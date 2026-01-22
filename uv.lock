@@ -588,7 +588,6 @@ dev = [
     { name = "ruff", specifier = "==0.14.*" },
     { name = "wemake-python-styleguide", specifier = "==1.5.*" },
 ]
-runtime = []
 
 [[package]]
 name = "mypy"

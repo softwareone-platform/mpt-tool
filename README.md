@@ -8,6 +8,11 @@
 A Python-based migration tool for extensions that standardizes migration execution. It provides a CLI-based interface
 to manage both schema and data migrations across multiple backends, ensuring consistent behavior in all environments.
 
+## Documentation
+
+📚 **[Complete Usage Guide](docs/PROJECT_DESCRIPTION.md)**
+
+
 ## Getting started
 
 ### Prerequisites
