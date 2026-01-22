@@ -1,7 +1,8 @@
-import os
 from functools import cached_property
 
 from mpt_api_client import MPTClient
+
+from mpt_tool.config import get_mpt_config
 
 
 class MPTAPIClientMixin:
@@ -22,8 +23,8 @@ class MPTAPIClientMixin:
             ValueError: If required environment variables are not set
 
         """
-        api_token = os.getenv("MPT_API_TOKEN")
-        base_url = os.getenv("MPT_API_BASE_URL")
+        api_token = get_mpt_config("api_token")
+        base_url = get_mpt_config("base_url")
         if not api_token or not base_url:
             raise ValueError("MPT API token and base URL must be set in env variables")
 

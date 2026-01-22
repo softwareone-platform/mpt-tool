@@ -1,7 +1,8 @@
-import os
 from functools import cached_property
 
 from pyairtable import Api as AirtableClient
+
+from mpt_tool.config import get_airtable_config
 
 
 class AirtableAPIClientMixin:
@@ -21,7 +22,7 @@ class AirtableAPIClientMixin:
             ValueError: If required environment variables are not set
 
         """
-        airtable_api_key = os.getenv("AIRTABLE_API_KEY")
+        airtable_api_key = get_airtable_config("api_key")
         if not airtable_api_key:
             raise ValueError("Airtable API key must be set in env variable AIRTABLE_API_KEY")
 

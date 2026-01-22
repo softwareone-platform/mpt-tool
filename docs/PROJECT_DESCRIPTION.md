@@ -2,6 +2,20 @@
 
 mpt-tool is a command-line utility to scaffold, run, and audit migrations for MPT extensions.
 
+## Quick Start
+1. **Install the tool:**
+    ```bash
+      pip install mpt-tool
+    ```
+2. **Create your first migration:**
+    ```bash
+      mpt-tool migrate --new-data sync_users
+    ```
+3. **Edit the generated file in the migrations/ folder**
+4. **Run all pending migrations**
+    ```bash
+      mpt-tool migrate --data
+    ```
 
 ## Installation
 
@@ -16,6 +30,7 @@ Install with pip or your favorite PyPI package manager:
 ```
 
 ## Prerequisites
+
 - Python 3.12+ in your environment
 - A `migrations/` folder in your project (it will be created automatically the first time you create a migration)
 - Environment variables. See [Environment Variables](#environment-variables) for details.
@@ -23,29 +38,47 @@ Install with pip or your favorite PyPI package manager:
 ## Environment Variables
 
 The tool uses the following environment variables:
-- `STORAGE_TYPE`: Storage backend for migration state (default: `local`)
-  - `local`: Stores state in `.migrations-state.json` in your project root
-  - `airtable`: Stores state in an Airtable table (requires additional configuration):
-    - `STORAGE_AIRTABLE_APP_ID`: Your Airtable app ID
-    - `STORAGE_AIRTABLE_TABLE_NAME`: The name of the table to store migration state
-- `MPT_API_KEY`: Your MPT API key (required when using `MPTAPIClientMixin`)
+- `STORAGE_TYPE`: Storage backend for migration state (`local` or `airtable`, default: `local`). See [Storage Configuration](#storage)
+- `MPT_API_TOKEN`: Your MPT API key (required when using `MPTAPIClientMixin`)
+- `MPT_API_BASE_URL`: The MPT API base url (required when using `MPTAPIClientMixin`)
 - `AIRTABLE_API_KEY`: Your Airtable API key (required when using `AirtableAPIClientMixin` or when `STORAGE_TYPE=airtable`)
 
+## Configuration
 
-## Quick Start
-1. **Install the tool:**
-```bash
-  pip install mpt-tool
-```
-2. **Create your first migration:**
-```bash
-  mpt-tool migrate --new-data sync_users
-```
-3. **Edit the generated file in the migrations/ folder**
-4. **Run all pending migrations**
-```bash
-  mpt-tool migrate --data
-```
+### Storage
+
+The tool supports two storage backends: local and Airtable. By default, it uses the local storage.
+
+Local storage is the simplest option and is suitable for development and testing. However, it is not suitable for production deployments.
+The state is stored in a `.migrations-state.json` file in your project root.
+
+Airtable storage is recommended for production deployments. It allows you to track migration progress across multiple deployments.
+
+#### Local Storage
+No additional configuration is required.
+
+#### Airtable Storage
+
+Airtable configuration is done via environment variables:
+- `AIRTABLE_API_KEY`: Your Airtable API key
+- `STORAGE_AIRTABLE_BASE_ID`: Your Airtable base ID
+- `STORAGE_AIRTABLE_TABLE_NAME`: The name of the table to store migration state
+
+Your Airtable table must have the following columns:
+
+| Column Name   | Field Type                  | Required |
+|---------------|-----------------------------|:--------:|
+| order_id      | number                      |    ✅     |
+| migration_id  | singleLineText              |    ✅     |
+| started_at    | dateTime                    |    ❌     |
+| applied_at    | dateTime                    |    ❌     |
+| type          | singleSelect (data, schema) |    ✅     |
+
+
+**Airtable configuration steps:**
+1. Create a new table in your Airtable base (or use an existing one)
+2. Add the columns listed above with the specified field types
+3. Set the environment variables with your base ID and table name
 
 ## Usage
 
@@ -70,11 +103,12 @@ migration_id: user-provided name (e.g., `migration_name`)
 file: generated file name (e.g., `20260113180013_migration_name.py`)
 
 **Generated file structure:**
+
 ```python
 from mpt_tool.migration import DataBaseMigration  # or SchemaBaseMigration
 
 
-class Command(DataBaseMigration):
+class Migration(DataBaseMigration):
     def run(self):
         # implement your logic here
         pass
@@ -88,7 +122,7 @@ from mpt_tool.migration import DataBaseMigration
 from mpt_tool.migration.mixins import MPTAPIClientMixin, AirtableAPIClientMixin
 
 
-class Command(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
+class Migration(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
     def run(self):
         # Access MPT API
         agreement = self.mpt_client.commerce.agreements.get("AGR-1234-5678-9012")
@@ -98,7 +132,6 @@ class Command(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
         table = self.airtable_client.table("app_id", "table_name")
         records = table.all()
 
-        # Use built-in logger
         self.log.info(f"Processed {len(records)} records")
 ```
 
@@ -170,6 +203,14 @@ Where `MIGRATION_ID` is the filename without `order_id` and `.py` (e.g., `test1`
 - File: `20260113180013_sync_users.py`
 - Migration ID: `sync_users`
 
+If the migration doesn't exist in the migrations folder:
+* An error is logged and the command exits
+
+If the migration exists:
+* The migration state is created if it doesn't exist yet or updated:
+  * The started_at field is set as null
+  * The applied_at timestamp is recorded
+
 ### Listing Migrations
 To see all migrations and their status:
 
@@ -209,10 +250,10 @@ Run `mpt-tool --help` to see all available commands and params:
 
 **Migration fails to run:**
 - Review the error message in the terminal output
-- Check your `Command.run()` implementation for syntax errors
+- Check your `Migration.run()` implementation for syntax errors
 - Fix the issue and re-run the migration or use `--fake` to mark it as applied
 
-**_NOTE:_** There is currently no automatic rollback mechanism. If a migration partially modifies data before failing, you must manually revert those changes or create a new migration to fix the state.
+**NOTE:** There is currently no automatic rollback mechanism. If a migration partially modifies data before failing, you must manually revert those changes or create a new migration to fix the state.
 
 **Mixin errors (ValueError):**
 - Verify all required environment variables are set

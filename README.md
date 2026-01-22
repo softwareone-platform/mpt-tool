@@ -20,6 +20,7 @@ to manage both schema and data migrations across multiple backends, ensuring con
 - Docker and Docker Compose plugin (`docker compose` CLI)
 - `make`
 - [CodeRabbit CLI](https://www.coderabbit.ai/cli) (optional. Used for running review check locally)
+- Copy .env.sample to .env
 
 ### Make targets overview
 

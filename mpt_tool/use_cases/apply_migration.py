@@ -1,4 +1,4 @@
-from mpt_tool.managers import FileMigrationManager, FileStateManager
+from mpt_tool.managers import FileMigrationManager, StateManager, StateManagerFactory
 from mpt_tool.managers.errors import MigrationFolderError, StateNotFoundError
 from mpt_tool.use_cases.errors import ApplyMigrationError
 
@@ -9,10 +9,10 @@ class ApplyMigrationUseCase:
     def __init__(
         self,
         file_migration_manager: FileMigrationManager | None = None,
-        state_manager: FileStateManager | None = None,
+        state_manager: StateManager | None = None,
     ):
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
-        self.state_manager = state_manager or FileStateManager()
+        self.state_manager = state_manager or StateManagerFactory.get_instance()
 
     def execute(self, migration_id: str) -> None:
         """Apply a migration without running it."""
