@@ -27,7 +27,7 @@ def data_migration_file(migration_folder):
     migration_file = migration_folder / f"20250406020202_{migration_id}.py"
     migration_file.write_text(
         encoding="utf-8",
-        data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(command_name="DataBaseCommand"),
+        data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(migration_name="DataBaseMigration"),
     )
     return {"migration_id": migration_id, "full_filename": migration_file}
 
@@ -36,9 +36,9 @@ def data_migration_file(migration_folder):
 def data_migration_file_error(migration_folder):
     migration_id = "fake_error_file_name"
     migration_file = migration_folder / f"20250406020202_{migration_id}.py"
-    file_data = MIGRATION_SCAFFOLDING_TEMPLATE.substitute(command_name="DataBaseCommand").replace(
-        "pass", "raise Exception('Fake Error')"
-    )
+    file_data = MIGRATION_SCAFFOLDING_TEMPLATE.substitute(
+        migration_name="DataBaseMigration"
+    ).replace("pass", "raise Exception('Fake Error')")
     migration_file.write_text(encoding="utf-8", data=file_data)
     return {"migration_id": migration_id, "full_filename": migration_file}
 
@@ -49,7 +49,7 @@ def schema_migration_file(migration_folder):
     migration_file = migration_folder / f"20260101010101_{migration_id}.py"
     migration_file.write_text(
         encoding="utf-8",
-        data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(command_name="SchemaBaseCommand"),
+        data=MIGRATION_SCAFFOLDING_TEMPLATE.substitute(migration_name="SchemaBaseMigration"),
     )
     return {"migration_id": migration_id, "full_filename": migration_file}
 
@@ -95,15 +95,15 @@ def test_migrate_command(runner):
 
     assert result.exit_code == 2, result.output
     assert "Invalid value for migrate:" in result.output
-    assert "At least one option must be used." in result.output
+    assert "At least one param must be used." in result.output
 
 
-def test_migrate_command_multiple_options_error(runner):
+def test_migrate_command_multiple_params_error(runner):
     result = runner.invoke(app, ["migrate", "--new-data", "bla", "--new-schema", "foo"])
 
     assert result.exit_code == 2, result.output
     assert "Invalid value for migrate:" in result.output
-    assert "Only one option can be used." in result.output
+    assert "Only one param can be used." in result.output
 
 
 @freeze_time("2025-04-06 13:00:00")
@@ -208,7 +208,7 @@ def test_migrate_fake_folder_not_found(runner):
     result = runner.invoke(app, ["migrate", "--fake", "not_existing_migration"])
 
     assert result.exit_code == 1, result.output
-    assert "Error running migration: Migration folder not found: migrations" in result.output
+    assert "Error running fake command: Migration folder not found: migrations" in result.output
 
 
 @pytest.mark.usefixtures("data_migration_file")
@@ -216,7 +216,7 @@ def test_migrate_fake_migration_not_found(runner):
     result = runner.invoke(app, ["migrate", "--fake", "not_existing_migration"])
 
     assert result.exit_code == 1, result.output
-    assert "Error running migration: Migration not_existing_migration not found" in result.output
+    assert "Error running fake command: Migration not_existing_migration not found" in result.output
 
 
 @pytest.mark.usefixtures("applied_migration")
@@ -224,18 +224,20 @@ def test_migrate_fake_migration_already_applied(runner):
     result = runner.invoke(app, ["migrate", "--fake", "fake_data_file_name"])
 
     assert result.exit_code == 1, result.output
-    assert "Error running migration: Migration fake_data_file_name already applied" in result.output
+    assert (
+        "Error running fake command: Migration fake_data_file_name already applied" in result.output
+    )
 
 
 @freeze_time("2025-04-06 12:21:34")
 @pytest.mark.parametrize(
     ("migration_type", "expected_command"),
     [
-        ("--new-data", "DataBaseCommand"),
-        ("--new-schema", "SchemaBaseCommand"),
+        ("--new-data", "DataBaseMigration"),
+        ("--new-schema", "SchemaBaseMigration"),
     ],
 )
-def test_migrate_command_new_options(migration_type, expected_command, migration_folder, runner):
+def test_migrate_command_new(migration_type, expected_command, migration_folder, runner):
     migration_filename = "fake_file_name"
 
     result = runner.invoke(app, ["migrate", migration_type, migration_filename])
@@ -246,7 +248,7 @@ def test_migrate_command_new_options(migration_type, expected_command, migration
     assert f"Migration file: {new_migration_filename} has been created." in result.output
     new_migration_file = migration_folder / new_migration_filename
     assert new_migration_file.exists()
-    assert f"class Command({expected_command})" in new_migration_file.read_text()
+    assert f"class Migration({expected_command})" in new_migration_file.read_text()
 
 
 @freeze_time("2025-04-06 12:21:34")

@@ -1,17 +1,17 @@
 from typing import override
 
-from mpt_tool.commands import SchemaBaseCommand
 from mpt_tool.enums import MigrationTypeEnum
+from mpt_tool.migration import SchemaBaseMigration
 
 
-class FakeSchemaBaseCommand(SchemaBaseCommand):
+class FakeSchemaMigration(SchemaBaseMigration):
     @override
     def run(self):
         """Do something."""
 
 
 def test_schema_base_command_type():
-    command = FakeSchemaBaseCommand()
+    command = FakeSchemaMigration()
 
     result = command.type
 

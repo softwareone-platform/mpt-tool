@@ -1,17 +1,17 @@
 from typing import override
 
-from mpt_tool.commands import DataBaseCommand
 from mpt_tool.enums import MigrationTypeEnum
+from mpt_tool.migration import DataBaseMigration
 
 
-class FakeDataBaseCommand(DataBaseCommand):
+class FakeDataMigration(DataBaseMigration):
     @override
     def run(self):
         """Do something."""
 
 
 def test_data_base_command_type():
-    command = FakeDataBaseCommand()
+    command = FakeDataMigration()
 
     result = command.type
 

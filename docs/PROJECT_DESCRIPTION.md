@@ -71,10 +71,10 @@ file: generated file name (e.g., `20260113180013_migration_name.py`)
 
 **Generated file structure:**
 ```python
-from mpt_tool.commands import DataBaseCommand  # or SchemaBaseCommand
+from mpt_tool.migration import DataBaseMigration  # or SchemaBaseMigration
 
 
-class Command(DataBaseCommand):
+class Command(DataBaseMigration):
     def run(self):
         # implement your logic here
         pass
@@ -84,11 +84,11 @@ class Command(DataBaseCommand):
 You can add mixins to your migration commands to access external services:
 
 ```python
-from mpt_tool.commands import DataBaseCommand
-from mpt_tool.commands.mixins import MPTAPIClientMixin, AirtableAPIClientMixin
+from mpt_tool.migration import DataBaseMigration
+from mpt_tool.migration.mixins import MPTAPIClientMixin, AirtableAPIClientMixin
 
 
-class Command(DataBaseCommand, MPTAPIClientMixin, AirtableAPIClientMixin):
+class Command(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
     def run(self):
         # Access MPT API
         agreement = self.mpt_client.commerce.agreements.get("AGR-1234-5678-9012")
@@ -180,7 +180,7 @@ To see all migrations and their status:
 The output shows execution order, status, and timestamps.
 
 ### Getting Help
-Run `mpt-tool --help` to see all available commands and options:
+Run `mpt-tool --help` to see all available commands and params:
 ```bash
   mpt-tool --help
   mpt-tool migrate --help

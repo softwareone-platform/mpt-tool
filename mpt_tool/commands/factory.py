@@ -1,0 +1,45 @@
+from typing import cast
+
+from mpt_tool.commands.base import (
+    BaseCommand,
+)
+from mpt_tool.commands.data import DataCommand
+from mpt_tool.commands.errors import CommandNotFoundError
+from mpt_tool.commands.fake import FakeCommand
+from mpt_tool.commands.list import ListCommand
+from mpt_tool.commands.new_data import NewDataCommand
+from mpt_tool.commands.new_schema import NewSchemaCommand
+from mpt_tool.commands.schema import SchemaCommand
+
+
+class CommandFactory:
+    """Command factory to create the correct command."""
+
+    @classmethod
+    def get_instance(cls, param_data: dict[str, bool | str | None]) -> BaseCommand:  # noqa: C901, WPS212
+        """Get the correct command instance based on the parameter data.
+
+        Args:
+            param_data: The parameter data.
+
+        Return:
+            The command instance.
+
+        Raises:
+            CommandNotFoundError: If no command is found.
+        """
+        match param_data:
+            case {"data": True}:
+                return DataCommand()
+            case {"schema": True}:
+                return SchemaCommand()
+            case {"fake": fake_value} if fake_value is not None:
+                return FakeCommand(migration_id=cast(str, fake_value))
+            case {"new_schema": new_schema_value} if new_schema_value is not None:
+                return NewSchemaCommand(migration_id=cast(str, new_schema_value))
+            case {"new_data": new_data_value} if new_data_value is not None:
+                return NewDataCommand(migration_id=cast(str, new_data_value))
+            case {"list": True}:
+                return ListCommand()
+            case _:
+                raise CommandNotFoundError("Command not found.")

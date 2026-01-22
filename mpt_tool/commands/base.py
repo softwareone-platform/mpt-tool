@@ -1,25 +1,27 @@
-import logging
 from abc import ABC, abstractmethod
-
-from mpt_tool.enums import MigrationTypeEnum
-
-logger = logging.getLogger(__name__)
 
 
 class BaseCommand(ABC):
-    """Abstract base class for all migration commands."""
-
-    _type: MigrationTypeEnum
-
-    def __init__(self) -> None:
-        self.log = logger
+    """Base class for migration commands."""
 
     @property
-    def type(self) -> MigrationTypeEnum:
-        """The type of migration this command represents."""
-        return self._type
+    def name(self) -> str:
+        """The name of the command, used for CLI argument parsing."""
+        return self.__class__.__name__.replace("Command", "").lower()
+
+    @property
+    @abstractmethod
+    def start_message(self) -> str:
+        """Message to display before starting the migration."""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def success_message(self) -> str:
+        """Message to display after the migration has finished."""
+        raise NotImplementedError
 
     @abstractmethod
     def run(self) -> None:
-        """Executes the command."""
+        """Executes the migration."""
         raise NotImplementedError

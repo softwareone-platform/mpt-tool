@@ -88,10 +88,6 @@ show-source = true
 statistics = false
 per-file-ignores = [
   "tests/*: WPS202",
-  # TODO: just for the first iteration. It should be removed once refactored.
-  # see: https://github.com/softwareone-platform/mpt-tool/pull/15#discussion_r2698311330
-  "mpt_tool/use_cases/run_migrations.py: WPS232",
-  "mpt_tool/cli.py: WPS232",
 ]
 
 [tool.ruff]

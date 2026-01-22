@@ -20,7 +20,7 @@ class RunMigrationsUseCase:
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
         self.state_manager = state_manager or FileStateManager()
 
-    def execute(self, migration_type: MigrationTypeEnum) -> None:  # noqa: C901, WPS213, WPS231, WPS238
+    def execute(self, migration_type: MigrationTypeEnum) -> None:  # noqa: C901, WPS231
         """Run all migrations of a given type.
 
         Args:
