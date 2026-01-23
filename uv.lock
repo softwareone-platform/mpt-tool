@@ -525,15 +525,15 @@ wheels = [
 
 [[package]]
 name = "mpt-api-client"
-version = "1.0.0"
+version = "5.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "python-box" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/77/7e0f6f25fc0b758c7b509750a6cfdb0d67ca23d3dfc93840ac65998ed793/mpt_api_client-1.0.0.tar.gz", hash = "sha256:88959ca2e872e805713d301721b09238cfc37d21ea9e38e9f85dcba60c964e57", size = 39472, upload-time = "2026-01-12T16:02:06.73Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/c5/2a30be6b9f7adf3a72fa19cdc9f24f9011c6a0d2b5a5a243d8ea2e3f3ea0/mpt_api_client-5.0.0.tar.gz", hash = "sha256:36cef02d1ee097207ea281509571d3a51f9069d0ee6381483f482f92fd879757", size = 39488, upload-time = "2026-01-20T16:03:30.338Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/32/6b7685963b0e594b9cd94154b7e2622a5c0cf8869038a0ed922bae24a07c/mpt_api_client-1.0.0-py3-none-any.whl", hash = "sha256:6f2c32fb4b507541a21a7edeac4b4cce66014cb155baa1de0db0235659490339", size = 78198, upload-time = "2026-01-12T16:02:05.353Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/fa/f696e4c244c8f97d0e8634de49a5d9f3a372e04430a24bc2a6051b709969/mpt_api_client-5.0.0-py3-none-any.whl", hash = "sha256:2c28f4bed98d63b5cef3bd4e8b6ba89fb2b5a731e7afde0af0be9a0cc6677597", size = 78194, upload-time = "2026-01-20T16:03:28.945Z" },
 ]
 
 [[package]]
@@ -566,7 +566,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mpt-api-client", specifier = "==1.0.*" },
+    { name = "mpt-api-client", specifier = "==5.0.*" },
     { name = "pyairtable", specifier = "==3.3.*" },
     { name = "typer", specifier = ">=0.9.0" },
 ]
