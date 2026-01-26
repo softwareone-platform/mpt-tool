@@ -1,7 +1,7 @@
 import logging
 from typing import Any
 
-from mpt_tool.managers import FileMigrationManager, FileStateManager
+from mpt_tool.managers import FileMigrationManager, StateManager, StateManagerFactory
 
 logger = logging.getLogger(__name__)
 
@@ -12,10 +12,10 @@ class ListMigrationsUseCase:
     def __init__(
         self,
         file_migration_manager: FileMigrationManager | None = None,
-        state_manager: FileStateManager | None = None,
+        state_manager: StateManager | None = None,
     ):
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
-        self.state_manager = state_manager or FileStateManager()
+        self.state_manager = state_manager or StateManagerFactory.get_instance()
 
     def execute(self) -> dict[str, dict[str, Any]]:
         """List all migrations."""
