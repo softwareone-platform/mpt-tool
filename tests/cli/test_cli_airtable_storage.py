@@ -125,8 +125,9 @@ def test_migrate_list(runner, log):
     assert result.exit_code == 0, result.output
     assert "No state found for migration: fake_schema_file_name" in log.text
     formatted_output = "".join(result.output.split())
-    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃" in formatted_output
+    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃" in formatted_output
     assert (
-        "│20250406020202│fake_data_file…│2025-04-06T13:…│2025-04-06T13:0…│data│" in formatted_output
+        "│20250406020202│fake_data_file_name│2025-04-06T13:00:00+00:00│2025-04-06T13:00:00+00:00│data│Applied│"
+        in formatted_output
     )
-    assert "│20260101010101│fake_schema_fi…││││" in formatted_output
+    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│" in formatted_output

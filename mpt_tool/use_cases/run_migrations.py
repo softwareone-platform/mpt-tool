@@ -1,9 +1,10 @@
 import logging
 
-from mpt_tool.enums import MigrationTypeEnum
+from mpt_tool.enums import MigrationStatusEnum, MigrationTypeEnum
 from mpt_tool.managers import FileMigrationManager, StateManager, StateManagerFactory
 from mpt_tool.managers.errors import LoadMigrationError, MigrationFolderError, StateNotFoundError
-from mpt_tool.models import Migration
+from mpt_tool.migration.base import BaseMigration
+from mpt_tool.models import Migration, MigrationFile
 from mpt_tool.use_cases.errors import RunMigrationError
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,7 @@ class RunMigrationsUseCase:
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
         self.state_manager = state_manager or StateManagerFactory.get_instance()
 
-    def execute(self, migration_type: MigrationTypeEnum) -> None:  # noqa: C901, WPS231
+    def execute(self, migration_type: MigrationTypeEnum) -> None:  # noqa: WPS231
         """Run all migrations of a given type.
 
         Args:
@@ -35,12 +36,10 @@ class RunMigrationsUseCase:
             raise RunMigrationError(str(error)) from error
 
         for migration_file in migration_files:
-            try:
-                migration_instance = self.file_migration_manager.load_migration(migration_file)
-            except LoadMigrationError as error:
-                raise RunMigrationError(str(error)) from error
-
-            if migration_instance.type != migration_type:
+            migration_instance = self._get_migration_instance_by_type(
+                migration_file, migration_type
+            )
+            if migration_instance is None:
                 continue
 
             state = self._get_or_create_state(
@@ -51,20 +50,31 @@ class RunMigrationsUseCase:
                 continue
 
             logger.info("Running migration: %s", migration_file.migration_id)
-            state.start()
+            self._save_state(state, status=MigrationStatusEnum.RUNNING)
             try:
                 migration_instance.run()
             # We catch all exceptions here to ensure the state is updated
             # and the flow is not interrupted abruptly
             except Exception as error:
-                state.failed()
-                self.state_manager.save_state(state)
+                self._save_state(state, status=MigrationStatusEnum.FAILED)
                 raise RunMigrationError(
                     f"Migration {migration_file.migration_id} failed: {error!s}"
                 ) from error
 
-            state.applied()
-            self.state_manager.save_state(state)
+            self._save_state(state, status=MigrationStatusEnum.APPLIED)
+
+    def _get_migration_instance_by_type(
+        self, migration_file: MigrationFile, migration_type: MigrationTypeEnum
+    ) -> BaseMigration | None:
+        try:
+            migration_instance = self.file_migration_manager.load_migration(migration_file)
+        except LoadMigrationError as error:
+            raise RunMigrationError(str(error)) from error
+
+        if migration_instance.type != migration_type:
+            return None
+
+        return migration_instance
 
     def _get_or_create_state(
         self, migration_id: str, migration_type: MigrationTypeEnum, order_id: int
@@ -75,3 +85,14 @@ class RunMigrationsUseCase:
             state = self.state_manager.new(migration_id, migration_type, order_id)
 
         return state
+
+    def _save_state(self, state: Migration, status: MigrationStatusEnum) -> None:
+        match status:
+            case MigrationStatusEnum.APPLIED:
+                state.applied()
+            case MigrationStatusEnum.FAILED:
+                state.failed()
+            case MigrationStatusEnum.RUNNING:
+                state.start()
+
+        self.state_manager.save_state(state)

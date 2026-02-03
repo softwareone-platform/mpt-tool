@@ -220,6 +220,16 @@ To see all migrations and their status:
 
 The output shows execution order, status, and timestamps.
 
+The status column is derived from the persisted timestamps:
+
+| Status      | Condition                                                     |
+|-------------|---------------------------------------------------------------|
+| running     | `started_at` is set and `applied_at` is empty                 |
+| failed      | `started_at` and `applied_at` are empty for an existing state |
+| faked       | `started_at` is empty and `applied_at` is set                 |
+| applied     | Both `started_at` and `applied_at` are set                    |
+| not applied | No state entry exists for the migration file                  |
+
 ### Getting Help
 Run `mpt-tool --help` to see all available commands and params:
 ```bash
