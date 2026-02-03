@@ -1,7 +1,7 @@
 import logging
-from typing import Any
 
 from mpt_tool.managers import FileMigrationManager, StateManager, StateManagerFactory
+from mpt_tool.models import MigrationListItem
 
 logger = logging.getLogger(__name__)
 
@@ -17,21 +17,19 @@ class ListMigrationsUseCase:
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
         self.state_manager = state_manager or StateManagerFactory.get_instance()
 
-    def execute(self) -> dict[str, dict[str, Any]]:
-        """List all migrations."""
-        migrations_files = self.file_migration_manager.retrieve_migration_files()
-        state_file = self.state_manager.load()
-        migration_list_data = {}
-        for migration_file in migrations_files:
-            try:
-                state = state_file[migration_file.migration_id].to_dict()
-            except KeyError:
+    def execute(self) -> list[MigrationListItem]:
+        """List all migrations sorted by order identifier."""
+        migration_files = self.file_migration_manager.retrieve_migration_files()
+        migration_states = self.state_manager.load()
+        migration_list: list[MigrationListItem] = []
+        for migration_file in migration_files:
+            migration_state = migration_states.get(migration_file.migration_id)
+            if not migration_state:
                 logger.debug("No state found for migration: %s", migration_file.migration_id)
-                state = {}
+            migration_list.append(
+                MigrationListItem.from_sources(
+                    migration_file=migration_file, migration_state=migration_state
+                )
+            )
 
-            state["order_id"] = migration_file.order_id
-            migration_list_data[migration_file.migration_id] = state
-
-        # TODO: Create a DTO to represent the migration list and use it
-        # between the CLI layer and the Application layer (Use cases)
-        return migration_list_data
+        return sorted(migration_list, key=lambda migration: migration.order_id)

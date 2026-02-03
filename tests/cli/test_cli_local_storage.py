@@ -21,8 +21,8 @@ def applied_migration(data_migration_file, migration_state_file):
             "migration_id": "fake_data_file_name",
             "order_id": 20250406020202,
             "type": "data",
-            "started_at": "2025-04-06T13:00:00+00:00",
-            "applied_at": "2025-04-06T13:00:00+00:00",
+            "started_at": "2025-04-06T13:10:20+00:00",
+            "applied_at": "2025-04-06T13:10:30+00:00",
         }
     }
     migration_state_file.write_text(encoding="utf-8", data=json.dumps(applied_state_data))
@@ -30,7 +30,7 @@ def applied_migration(data_migration_file, migration_state_file):
     return data_migration_file
 
 
-@freeze_time("2025-04-06 13:00:00")
+@freeze_time("2025-04-06 13:10:30")
 @pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
 def test_migrate_data_migration(migration_state_file, runner, log):
     result = runner.invoke(app, ["migrate", "--data"])
@@ -42,8 +42,8 @@ def test_migrate_data_migration(migration_state_file, runner, log):
             "migration_id": "fake_data_file_name",
             "order_id": 20250406020202,
             "type": "data",
-            "started_at": "2025-04-06T13:00:00+00:00",
-            "applied_at": "2025-04-06T13:00:00+00:00",
+            "started_at": "2025-04-06T13:10:30+00:00",
+            "applied_at": "2025-04-06T13:10:30+00:00",
         }
     }
     assert "Running data migrations..." in result.output
@@ -63,8 +63,8 @@ def test_migrate_skip_migration_already_applied(migration_state_file, runner, lo
             "migration_id": "fake_data_file_name",
             "order_id": 20250406020202,
             "type": "data",
-            "started_at": "2025-04-06T13:00:00+00:00",
-            "applied_at": "2025-04-06T13:00:00+00:00",
+            "started_at": "2025-04-06T13:10:20+00:00",
+            "applied_at": "2025-04-06T13:10:30+00:00",
         }
     }
     assert "Running data migrations..." in result.output
@@ -72,7 +72,6 @@ def test_migrate_skip_migration_already_applied(migration_state_file, runner, lo
     assert "Migrations completed successfully." in result.output
 
 
-@freeze_time("2025-04-06 13:00:00")
 @pytest.mark.usefixtures("data_migration_file_error")
 def test_migrate_data_run_script_fail(migration_state_file, runner, log):
     result = runner.invoke(app, ["migrate", "--data"])
@@ -128,8 +127,9 @@ def test_migrate_list(runner, log):
     assert result.exit_code == 0, result.output
     assert "No state found for migration: fake_schema_file_name" in log.text
     formatted_output = "".join(result.output.split())
-    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃" in formatted_output
+    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃" in formatted_output
     assert (
-        "│20250406020202│fake_data_file…│2025-04-06T13:…│2025-04-06T13:0…│data│" in formatted_output
+        "│20250406020202│fake_data_file_name│2025-04-06T13:10:20+00:00│2025-04-06T13:10:30+00:00│data│Applied│"
+        in formatted_output
     )
-    assert "│20260101010101│fake_schema_fi…││││" in formatted_output
+    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│" in formatted_output

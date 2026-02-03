@@ -1,27 +1,30 @@
-from typing import Any
-
+from rich.console import Console, ConsoleOptions, RenderResult
 from rich.table import Table
+
+from mpt_tool.models import MigrationListItem
 
 
 class MigrationRender:
-    """Render the migration state."""
+    """Render migration state information as a formatted table."""
 
-    @classmethod
-    def table(cls, migrations_data: dict[str, dict[str, Any]]) -> Table:
-        """Render the migration state data in a table."""
-        table = Table()
-        table.add_column("order_id")
-        table.add_column("migration_id")
-        table.add_column("started_at")
-        table.add_column("applied_at")
-        table.add_column("type")
-        for key, migration_data in migrations_data.items():
+    _fields = ("order_id", "migration_id", "started_at", "applied_at", "type", "status")
+
+    def __init__(self, migration_items: list[MigrationListItem]):
+        self.migration_items = migration_items
+
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:  # noqa: PLW3201
+        table = Table(show_lines=True, title_justify="center")
+        for field in self._fields:
+            table.add_column(field, no_wrap=True, min_width=len(field))
+
+        for migration in self.migration_items:
             table.add_row(
-                str(migration_data["order_id"]),
-                key,
-                migration_data.get("started_at"),
-                migration_data.get("applied_at"),
-                migration_data.get("type"),
+                str(migration.order_id),
+                migration.migration_id,
+                migration.started_at.isoformat(timespec="seconds") if migration.started_at else "-",
+                migration.applied_at.isoformat(timespec="seconds") if migration.applied_at else "-",
+                migration.migration_type.value if migration.migration_type else "-",
+                migration.status.title(),
             )
 
-        return table
+        yield table

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Self
 
 from mpt_tool.constants import MAX_LEN_MIGRATION_ID
-from mpt_tool.enums import MigrationTypeEnum
+from mpt_tool.enums import MigrationStatusEnum, MigrationTypeEnum
 
 
 @dataclass
@@ -110,3 +110,31 @@ class MigrationFile:
         timestamp = dt.datetime.now(tz=dt.UTC).strftime("%Y%m%d%H%M%S")
         full_path = path / f"{timestamp}_{migration_id}.py"
         return cls(full_path=full_path, migration_id=migration_id, order_id=int(timestamp))
+
+
+@dataclass(frozen=True)
+class MigrationListItem:
+    """Represents the data required to render a migration entry."""
+
+    migration_id: str
+    order_id: int
+    migration_type: MigrationTypeEnum | None
+    started_at: dt.datetime | None
+    applied_at: dt.datetime | None
+    status: MigrationStatusEnum
+
+    @classmethod
+    def from_sources(
+        cls,
+        migration_file: MigrationFile,
+        migration_state: Migration | None,
+    ) -> Self:
+        """Create a migration list item from file metadata and stored state."""
+        return cls(
+            migration_id=migration_file.migration_id,
+            order_id=migration_file.order_id,
+            migration_type=migration_state.type if migration_state else None,
+            started_at=migration_state.started_at if migration_state else None,
+            applied_at=migration_state.applied_at if migration_state else None,
+            status=MigrationStatusEnum.from_state(migration_state),
+        )

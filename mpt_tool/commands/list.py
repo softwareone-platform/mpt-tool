@@ -4,6 +4,7 @@ import typer
 from rich.console import Console
 
 from mpt_tool.commands.base import BaseCommand
+from mpt_tool.constants import CONSOLE_WIDTH
 from mpt_tool.renders import MigrationRender
 from mpt_tool.use_cases import ListMigrationsUseCase
 
@@ -23,11 +24,10 @@ class ListCommand(BaseCommand):
 
     @override
     def run(self) -> None:
-        state_data = ListMigrationsUseCase().execute()
-        if not state_data:
+        migrations = ListMigrationsUseCase().execute()
+        if not migrations:
             typer.echo("No migrations found.")
             return
 
-        console = Console()
-        # TODO: check console render -> https://rich.readthedocs.io/en/stable/protocol.html#console-render
-        console.print(MigrationRender.table(state_data), overflow="fold")
+        console = Console(width=CONSOLE_WIDTH)
+        console.print(MigrationRender(migration_items=migrations), overflow="fold")
