@@ -23,7 +23,7 @@ class MigrationStatusEnum(StrEnum):
             return cls.APPLIED
         if migration_state.started_at and not migration_state.applied_at:
             return cls.RUNNING
-        if not migration_state.started_at and migration_state.applied_at:
+        if migration_state.started_at is None and migration_state.applied_at:
             return cls.FAKE_APPLY
 
         return cls.FAILED
