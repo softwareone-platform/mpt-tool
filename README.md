@@ -12,7 +12,6 @@ to manage both schema and data migrations across multiple backends, ensuring con
 
 📚 **[Complete Usage Guide](docs/PROJECT_DESCRIPTION.md)**
 
-
 ## Getting started
 
 ### Prerequisites

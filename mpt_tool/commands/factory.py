@@ -3,6 +3,7 @@ from typing import cast
 from mpt_tool.commands.base import (
     BaseCommand,
 )
+from mpt_tool.commands.check import CheckCommand
 from mpt_tool.commands.data import DataCommand
 from mpt_tool.commands.errors import CommandNotFoundError
 from mpt_tool.commands.fake import FakeCommand
@@ -28,7 +29,9 @@ class CommandFactory:
         Raises:
             CommandNotFoundError: If no command is found.
         """
-        match param_data:
+        match param_data:  # noqa: WPS242
+            case {"check": True}:
+                return CheckCommand()
             case {"data": True}:
                 return DataCommand()
             case {"schema": True}:

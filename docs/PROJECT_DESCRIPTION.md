@@ -135,6 +135,28 @@ class Migration(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
         self.log.info(f"Processed {len(records)} records")
 ```
 
+### Checking Migrations
+Before running migrations, you can validate your migration folder for issues:
+
+```bash
+  mpt-tool migrate --check
+```
+
+This command:
+- Verifies the migration folder structure
+- Detects duplicate migration_id values (which could happen if migrations were created with the same name)
+- Exits with code 0 if all checks pass
+- Exits with code 1 and shows a detailed error message if duplicates are found
+
+**Example output when duplicates are found:**
+
+```bash
+Checking migrations...
+Error running check command: Duplicate migration_id found in migrations: 20260113180013_duplicate_name.py, 20260114190014_duplicate_name.py
+```
+
+**Best Practice:** Run `--check` as part of your CI/CD pipeline to catch migration issues before deployment.
+
 ### Running Migrations
 - **Run all pending data migrations:**
   ```bash
@@ -239,6 +261,11 @@ Run `mpt-tool --help` to see all available commands and params:
 
 
 ## Best Practices
+
+### Migration Validation
+- Run `mpt-tool migrate --check` before committing migration files
+- Include `--check` in your CI/CD pipeline to catch issues early
+- Verify there are no duplicate migration_id values before deployment
 
 ### Migration Naming
 - Use descriptive, snake_case names (e.g., `add_user_table`, `fix_null_emails`, `sync_agreements_from_api`)

@@ -99,3 +99,35 @@ def test_migrate_list_no_migrations(runner):
 
     assert result.exit_code == 0, result.output
     assert "No migrations found." in result.output
+
+
+def test_migrate_check_no_duplicates(runner, migration_folder):
+    (migration_folder / "20260101010101_first.py").touch()
+    (migration_folder / "20260102020202_second.py").touch()
+
+    result = runner.invoke(app, ["migrate", "--check"])
+
+    assert result.exit_code == 0, result.output
+    assert "Checking migrations..." in result.output
+    assert "Migrations check passed successfully." in result.output
+
+
+def test_migrate_check_with_duplicate_id(runner, migration_folder):
+    (migration_folder / "20260101010101_duplicate_name.py").touch()
+    (migration_folder / "20260102020202_duplicate_name.py").touch()
+
+    result = runner.invoke(app, ["migrate", "--check"])
+
+    assert result.exit_code == 1, result.output
+    assert "Duplicate migration_id found in migrations" in result.output
+    assert "20260101010101_duplicate_name.py" in result.output
+    assert "20260102020202_duplicate_name.py" in result.output
+
+
+@pytest.mark.usefixtures("migration_folder")
+def test_migrate_check_empty_folder(runner):
+    result = runner.invoke(app, ["migrate", "--check"])
+
+    assert result.exit_code == 0, result.output
+    assert "Checking migrations..." in result.output
+    assert "Migrations check passed successfully." in result.output
