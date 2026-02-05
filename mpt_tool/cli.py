@@ -18,6 +18,9 @@ def callback() -> None:
 @app.command("migrate")
 def migrate(  # noqa: WPS211
     ctx: typer.Context,
+    check: Annotated[  # noqa: FBT002
+        bool, typer.Option("--check", help="Check for duplicate migration_id in migrations.")
+    ] = False,
     data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # noqa: FBT002
     schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # noqa: FBT002
     fake: Annotated[

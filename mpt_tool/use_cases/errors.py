@@ -5,13 +5,17 @@ class UseCaseError(BaseError):
     """Base error for use cases."""
 
 
+class ApplyMigrationError(UseCaseError):
+    """Error applying migration."""
+
+
+class CheckMigrationError(UseCaseError):
+    """Error checking migrations."""
+
+
 class NewMigrationError(UseCaseError):
     """Error creating new migration."""
 
 
 class RunMigrationError(UseCaseError):
     """Error running migration."""
-
-
-class ApplyMigrationError(UseCaseError):
-    """Error applying migration."""
