@@ -38,10 +38,10 @@ Install with pip or your favorite PyPI package manager:
 ## Environment Variables
 
 The tool uses the following environment variables:
-- `STORAGE_TYPE`: Storage backend for migration state (`local` or `airtable`, default: `local`). See [Storage Configuration](#storage)
-- `MPT_API_TOKEN`: Your MPT API key (required when using `MPTAPIClientMixin`)
 - `MPT_API_BASE_URL`: The MPT API base url (required when using `MPTAPIClientMixin`)
-- `AIRTABLE_API_KEY`: Your Airtable API key (required when using `AirtableAPIClientMixin` or when `STORAGE_TYPE=airtable`)
+- `MPT_API_TOKEN`: Your MPT API key (required when using `MPTAPIClientMixin`)
+- `MPT_TOOL_STORAGE_TYPE`: Storage backend for migration state (`local` or `airtable`, default: `local`). See [Storage Configuration](#storage)
+- `MPT_TOOL_STORAGE_AIRTABLE_API_KEY`: Your Airtable API key (required when using `AirtableAPIClientMixin` or when `MPT_TOOL_STORAGE_TYPE=airtable`)
 
 ## Configuration
 
@@ -60,9 +60,9 @@ No additional configuration is required.
 #### Airtable Storage
 
 Airtable configuration is done via environment variables:
-- `AIRTABLE_API_KEY`: Your Airtable API key
-- `STORAGE_AIRTABLE_BASE_ID`: Your Airtable base ID
-- `STORAGE_AIRTABLE_TABLE_NAME`: The name of the table to store migration state
+- `MPT_TOOL_STORAGE_AIRTABLE_API_KEY`: Your Airtable API key
+- `MPT_TOOL_STORAGE_AIRTABLE_BASE_ID`: Your Airtable base ID
+- `MPT_TOOL_STORAGE_AIRTABLE_TABLE_NAME`: The name of the table to store migration state
 
 Your Airtable table must have the following columns:
 
