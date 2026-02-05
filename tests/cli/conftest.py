@@ -8,7 +8,7 @@ from mpt_tool.templates import MIGRATION_SCAFFOLDING_TEMPLATE
 @pytest.fixture(autouse=True)
 def mock_chdir(monkeypatch, tmp_path):
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("STORAGE_TYPE", "local")
+    monkeypatch.setenv("MPT_TOOL_STORAGE_TYPE", "local")
 
 
 @pytest.fixture

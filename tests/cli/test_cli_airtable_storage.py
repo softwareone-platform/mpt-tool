@@ -7,10 +7,10 @@ from mpt_tool.cli import app
 
 @pytest.fixture(autouse=True)
 def set_airtable_env_vars(monkeypatch):
-    monkeypatch.setenv("STORAGE_TYPE", "airtable")
-    monkeypatch.setenv("AIRTABLE_API_KEY", "fake_api_key")
-    monkeypatch.setenv("STORAGE_AIRTABLE_BASE_ID", "fake_base_id")
-    monkeypatch.setenv("STORAGE_AIRTABLE_TABLE_NAME", "fake_table_name")
+    monkeypatch.setenv("MPT_TOOL_STORAGE_TYPE", "airtable")
+    monkeypatch.setenv("MPT_TOOL_STORAGE_AIRTABLE_API_KEY", "fake_api_key")
+    monkeypatch.setenv("MPT_TOOL_STORAGE_AIRTABLE_BASE_ID", "fake_base_id")
+    monkeypatch.setenv("MPT_TOOL_STORAGE_AIRTABLE_TABLE_NAME", "fake_table_name")
 
 
 @pytest.fixture
