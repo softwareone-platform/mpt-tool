@@ -9,16 +9,16 @@ mpt-tool is a command-line utility to scaffold, run, and audit migrations for MP
     ```
 2. **Initialize the migration tool:**
     ```bash
-      mpt-tool migrate --init
+      mpt-service-cli migrate --init
     ```
 3. **Create your first migration:**
     ```bash
-      mpt-tool migrate --new-data sync_users
+      mpt-service-cli migrate --new-data sync_users
     ```
 4. **Edit the generated file in the migrations/ folder**
 5. **Run all pending data migrations**
     ```bash
-      mpt-tool migrate --data
+      mpt-service-cli migrate --data
     ```
 
 ## Installation
@@ -89,7 +89,7 @@ Your Airtable table must have the following columns:
 Before using the migration tool for the first time, you should initialize it. This creates the necessary resources:
 
 ```bash
-  mpt-tool migrate --init
+  mpt-service-cli migrate --init
 ```
 
 This command creates:
@@ -114,11 +114,11 @@ This command creates:
 2. Run the appropriate command:
 ```bash
   # Data migration
-  mpt-tool migrate --new-data "migration_name"
+  mpt-service-cli migrate --new-data "migration_name"
 ```
 ```bash
   # Schema migration
-  mpt-tool migrate --new-schema "migration_name"
+  mpt-service-cli migrate --new-schema "migration_name"
 ```
 
 A new file is created in `migrations/` with a timestamped prefix (e.g., `20260113180013_migration_name.py`) and a prefilled `Command` class.
@@ -164,7 +164,7 @@ class Migration(DataBaseMigration, MPTAPIClientMixin, AirtableAPIClientMixin):
 Before running migrations, you can validate your migration folder for issues:
 
 ```bash
-  mpt-tool migrate --check
+  mpt-service-cli migrate --check
 ```
 
 This command:
@@ -185,11 +185,11 @@ Error running check command: Duplicate migration_id found in migrations: 2026011
 ### Running Migrations
 - **Run all pending data migrations:**
   ```bash
-  mpt-tool migrate --data
+  mpt-service-cli migrate --data
   ```
 - **Run all pending schema migrations:**
   ```bash
-  mpt-tool migrate --schema
+  mpt-service-cli migrate --schema
   ```
 
 Migrations are executed in order based on their order_id (timestamp). The tool automatically:
@@ -241,7 +241,7 @@ If a migration fails during execution:
 To mark a migration as applied without running it:
 
 ```bash
-  mpt-tool migrate --fake MIGRATION_ID
+  mpt-service-cli migrate --fake MIGRATION_ID
 ```
 
 Where `MIGRATION_ID` is the filename without `order_id` and `.py` (e.g., `test1`).
@@ -262,7 +262,7 @@ If the migration exists:
 To see all migrations and their status:
 
 ```bash
-  mpt-tool migrate --list
+  mpt-service-cli migrate --list
 ```
 
 The output shows execution order, status, and timestamps.
@@ -278,17 +278,17 @@ The status column is derived from the persisted timestamps:
 | not applied | No state entry exists for the migration file                  |
 
 ### Getting Help
-Run `mpt-tool --help` to see all available commands and params:
+Run `mpt-service-cli --help` to see all available commands and params:
 ```bash
-  mpt-tool --help
-  mpt-tool migrate --help
+  mpt-service-cli --help
+  mpt-service-cli migrate --help
 ```
 
 
 ## Best Practices
 
 ### Migration Validation
-- Run `mpt-tool migrate --check` before committing migration files
+- Run `mpt-service-cli migrate --check` before committing migration files
 - Include `--check` in your CI/CD pipeline to catch issues early
 - Verify there are no duplicate migration_id values before deployment
 

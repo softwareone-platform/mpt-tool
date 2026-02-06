@@ -38,7 +38,7 @@ review:
 	  coderabbit review --prompt-only
 
 run:
-	  $(DC) run --rm -it app bash -c "mpt-tool migrate --help && exec bash"
+	  $(DC) run --rm -it app bash -c "mpt-service-cli migrate --help && exec bash"
 
 test:
 	  $(DC) run --rm app pytest $(if $(args),$(args),.)
