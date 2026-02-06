@@ -13,6 +13,10 @@ class CheckMigrationError(UseCaseError):
     """Error checking migrations."""
 
 
+class InitError(UseCaseError):
+    """Error initializing tool."""
+
+
 class NewMigrationError(UseCaseError):
     """Error creating new migration."""
 

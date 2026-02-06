@@ -120,6 +120,26 @@ def test_migrate_fake_migration_already_applied(runner):
     )
 
 
+def test_migrate_init(runner, tmp_path):
+    result = runner.invoke(app, ["migrate", "--init"])
+
+    assert result.exit_code == 0, result.output
+    assert "Initializing migration tool..." in result.output
+    assert "Migration tool initialized successfully." in result.output
+    assert (tmp_path / "migrations").exists()
+    assert (tmp_path / ".migrations-state.json").exists()
+
+
+@pytest.mark.usefixtures("migration_state_file")
+def test_migrate_init_file_already_exists(runner, tmp_path, log):
+    result = runner.invoke(app, ["migrate", "--init"])
+
+    assert result.exit_code == 1, result.output
+    assert (
+        "Cannot initialize - State file already exists at .migrations-state.json" in result.output
+    )
+
+
 @pytest.mark.usefixtures("applied_migration", "schema_migration_file", "migration_state_file")
 def test_migrate_list(runner, log):
     result = runner.invoke(app, ["migrate", "--list"])

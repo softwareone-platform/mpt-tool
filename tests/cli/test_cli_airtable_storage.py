@@ -1,6 +1,8 @@
 import pytest
 from freezegun import freeze_time
+from pyairtable import Api
 from pyairtable.testing import MockAirtable
+from requests import HTTPError
 
 from mpt_tool.cli import app
 
@@ -116,6 +118,60 @@ def test_migrate_fake_migration_already_applied(runner):
     assert (
         "Error running fake command: Migration fake_data_file_name already applied" in result.output
     )
+
+
+def test_migrate_init(mocker, runner):
+    mock_base = mocker.Mock(create_table=mocker.Mock(), spec=["create_table"])
+    mocker.patch.object(Api, "base", return_value=mock_base, autospec=True)
+
+    result = runner.invoke(app, ["migrate", "--init"])
+
+    assert result.exit_code == 0, result.output
+    assert "Initializing migration tool..." in result.output
+    assert "Migration tool initialized successfully." in result.output
+    mock_base.create_table.assert_called_once_with(
+        "fake_table_name",
+        fields=[
+            {"name": "migration_id", "type": "singleLineText"},
+            {"name": "order_id", "type": "number", "options": {"precision": 0}},
+            {
+                "name": "type",
+                "type": "singleSelect",
+                "options": {"choices": [{"name": "data"}, {"name": "schema"}]},
+            },
+            {
+                "name": "started_at",
+                "type": "dateTime",
+                "options": {
+                    "dateFormat": {"name": "iso"},
+                    "timeFormat": {"name": "24hour"},
+                    "timeZone": "utc",
+                },
+            },
+            {
+                "name": "applied_at",
+                "type": "dateTime",
+                "options": {
+                    "dateFormat": {"name": "iso"},
+                    "timeFormat": {"name": "24hour"},
+                    "timeZone": "utc",
+                },
+            },
+        ],
+    )
+
+
+def test_migrate_init_table_already_exists(mocker, runner):
+    mock_base = mocker.Mock(
+        create_table=mocker.Mock(side_effect=HTTPError("Error")), spec=["create_table"]
+    )
+    mocker.patch.object(Api, "base", return_value=mock_base, autospec=True)
+
+    result = runner.invoke(app, ["migrate", "--init"])
+
+    assert result.exit_code == 1, result.output
+    assert "Initializing migration tool..." in result.output
+    assert "Error running init command:" in result.output
 
 
 @pytest.mark.usefixtures("applied_migration", "schema_migration_file")
