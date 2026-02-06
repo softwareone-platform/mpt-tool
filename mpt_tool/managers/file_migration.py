@@ -18,6 +18,11 @@ class FileMigrationManager:
     _migration_folder: Path = Path(MIGRATION_FOLDER)
 
     @classmethod
+    def exists(cls) -> bool:
+        """Check if the file migration folder exists."""
+        return cls._migration_folder.exists()
+
+    @classmethod
     def load_migration(cls, migration_file: MigrationFile) -> BaseMigration:
         """Loads a migration instance from a migration file.
 
@@ -61,7 +66,7 @@ class FileMigrationManager:
         Raises:
             CreateMigrationError: If an error occurs during migration creation.
         """
-        cls._migration_folder.mkdir(parents=True, exist_ok=True)
+        cls.new_migration_folder()
         try:
             migration_file = MigrationFile.new(migration_id=file_suffix, path=cls._migration_folder)
         except ValueError as error:
@@ -85,6 +90,11 @@ class FileMigrationManager:
         return migration_file
 
     @classmethod
+    def new_migration_folder(cls) -> None:
+        """Creates a new migration folder."""
+        cls._migration_folder.mkdir(parents=True, exist_ok=True)
+
+    @classmethod
     def retrieve_migration_files(cls) -> tuple[MigrationFile, ...]:
         """Retrieves all migration files."""
         return cls._get_migration_files()
@@ -99,7 +109,7 @@ class FileMigrationManager:
         Raises:
              MigrationFolderError: If an error occurs during migration validation.
         """
-        if not cls._migration_folder.exists():
+        if not cls.exists():
             raise MigrationFolderError(f"Migration folder not found: {cls._migration_folder}")
 
         migrations = cls._get_migration_files()

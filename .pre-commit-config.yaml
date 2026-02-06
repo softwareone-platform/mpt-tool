@@ -35,6 +35,7 @@ repos:
         args: ["--config-file=pyproject.toml", "."]
         pass_filenames: false
         additional_dependencies:
-          - typer
-          - mpt_api_client
-          - pyairtable
+          - mpt_api_client==5.0.*
+          - typer>=0.9.0
+          - types-requests==2.32.*
+          - pyairtable==3.3.*

@@ -31,6 +31,9 @@ def migrate(  # noqa: WPS211
             metavar="MIGRATION_ID",
         ),
     ] = None,
+    init: Annotated[  # noqa: FBT002
+        bool, typer.Option("--init", help="Initialize migration tool resources.")
+    ] = False,
     new_data: Annotated[
         str | None,
         typer.Option(

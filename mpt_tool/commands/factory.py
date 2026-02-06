@@ -7,6 +7,7 @@ from mpt_tool.commands.check import CheckCommand
 from mpt_tool.commands.data import DataCommand
 from mpt_tool.commands.errors import CommandNotFoundError
 from mpt_tool.commands.fake import FakeCommand
+from mpt_tool.commands.init import InitCommand
 from mpt_tool.commands.list import ListCommand
 from mpt_tool.commands.new_data import NewDataCommand
 from mpt_tool.commands.new_schema import NewSchemaCommand
@@ -30,6 +31,8 @@ class CommandFactory:
             CommandNotFoundError: If no command is found.
         """
         match param_data:  # noqa: WPS242
+            case {"init": True}:
+                return InitCommand()
             case {"check": True}:
                 return CheckCommand()
             case {"data": True}:

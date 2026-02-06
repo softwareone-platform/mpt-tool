@@ -1,12 +1,14 @@
-from typing import override
+from typing import Any, override
 
+from pyairtable import Api
 from pyairtable.formulas import match
 from pyairtable.orm import Model, fields
+from requests import HTTPError
 
 from mpt_tool.config import get_airtable_config
 from mpt_tool.enums import MigrationTypeEnum
 from mpt_tool.managers import StateManager
-from mpt_tool.managers.errors import StateNotFoundError
+from mpt_tool.managers.errors import InitializationError, StateNotFoundError
 from mpt_tool.models import Migration
 
 
@@ -41,19 +43,13 @@ class AirtableStateManager(StateManager):
 
     @override
     @classmethod
-    def load(cls) -> dict[str, Migration]:
-        migrations = {}
-        for state in MigrationStateModel.all():
-            migration = Migration(
-                migration_id=state.migration_id,
-                order_id=state.order_id,
-                type=MigrationTypeEnum(state.type),
-                started_at=state.started_at,
-                applied_at=state.applied_at,
-            )
-            migrations[migration.migration_id] = migration
+    def exists(cls) -> bool:
+        try:
+            MigrationStateModel.meta.table.schema()
+        except HTTPError:
+            return False
 
-        return migrations
+        return True
 
     @override
     @classmethod
@@ -69,6 +65,67 @@ class AirtableStateManager(StateManager):
             started_at=state.started_at,
             applied_at=state.applied_at,
         )
+
+    @override
+    @classmethod
+    def initialize(cls) -> None:
+        api_key = get_airtable_config("api_key")
+        base_id = get_airtable_config("base_id")
+        table_name = get_airtable_config("table_name")
+        if not api_key or not base_id or not table_name:
+            raise InitializationError(
+                "Airtable configuration missing. Please set MPT_TOOL_STORAGE_AIRTABLE_API_KEY, "
+                "MPT_TOOL_STORAGE_AIRTABLE_BASE_ID, and MPT_TOOL_STORAGE_AIRTABLE_TABLE_NAME."
+            )
+
+        base = Api(api_key).base(base_id)
+        table_fields: list[dict[str, Any]] = [
+            {"name": "migration_id", "type": "singleLineText"},
+            {"name": "order_id", "type": "number", "options": {"precision": 0}},
+            {
+                "name": "type",
+                "type": "singleSelect",
+                "options": {"choices": [{"name": "data"}, {"name": "schema"}]},
+            },
+            {
+                "name": "started_at",
+                "type": "dateTime",
+                "options": {
+                    "dateFormat": {"name": "iso"},
+                    "timeFormat": {"name": "24hour"},
+                    "timeZone": "utc",
+                },
+            },
+            {
+                "name": "applied_at",
+                "type": "dateTime",
+                "options": {
+                    "dateFormat": {"name": "iso"},
+                    "timeFormat": {"name": "24hour"},
+                    "timeZone": "utc",
+                },
+            },
+        ]
+        try:
+            base.create_table(table_name, fields=table_fields)
+        except HTTPError as error:
+            raise InitializationError(str(error)) from error
+
+    @override
+    @classmethod
+    def load(cls) -> dict[str, Migration]:
+        migrations = {}
+        for state in MigrationStateModel.all():
+            migration = Migration(
+                migration_id=state.migration_id,
+                order_id=state.order_id,
+                type=MigrationTypeEnum(state.type),
+                started_at=state.started_at,
+                applied_at=state.applied_at,
+            )
+            migrations[migration.migration_id] = migration
+
+        return migrations
 
     @override
     @classmethod

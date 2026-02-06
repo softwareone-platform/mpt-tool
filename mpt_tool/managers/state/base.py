@@ -9,8 +9,8 @@ class StateManager(ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls) -> dict[str, Migration]:
-        """Load migration states."""
+    def exists(cls) -> bool:
+        """Return True if storage exists."""
         raise NotImplementedError
 
     @classmethod
@@ -24,6 +24,22 @@ class StateManager(ABC):
         Raises:
             StateNotFoundError: If the state is not found.
         """
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def initialize(cls) -> None:
+        """Initialize the state storage.
+
+        Raises:
+            InitializationError: If the storage already exists or cannot be created.
+        """
+        raise NotImplementedError
+
+    @classmethod
+    @abstractmethod
+    def load(cls) -> dict[str, Migration]:
+        """Load migration states."""
         raise NotImplementedError
 
     @classmethod

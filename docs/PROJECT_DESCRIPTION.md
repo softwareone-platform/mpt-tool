@@ -7,12 +7,16 @@ mpt-tool is a command-line utility to scaffold, run, and audit migrations for MP
     ```bash
       pip install mpt-tool
     ```
-2. **Create your first migration:**
+2. **Initialize the migration tool:**
+    ```bash
+      mpt-tool migrate --init
+    ```
+3. **Create your first migration:**
     ```bash
       mpt-tool migrate --new-data sync_users
     ```
-3. **Edit the generated file in the migrations/ folder**
-4. **Run all pending migrations**
+4. **Edit the generated file in the migrations/ folder**
+5. **Run all pending data migrations**
     ```bash
       mpt-tool migrate --data
     ```
@@ -32,7 +36,7 @@ Install with pip or your favorite PyPI package manager:
 ## Prerequisites
 
 - Python 3.12+ in your environment
-- A `migrations/` folder in your project (it will be created automatically the first time you create a migration)
+- A `migrations/` folder in your project (created automatically with `--init` or when you create your first migration)
 - Environment variables. See [Environment Variables](#environment-variables) for details.
 
 ## Environment Variables
@@ -79,6 +83,27 @@ Your Airtable table must have the following columns:
 1. Create a new table in your Airtable base (or use an existing one)
 2. Add the columns listed above with the specified field types
 3. Set the environment variables with your base ID and table name
+
+## Initialization
+
+Before using the migration tool for the first time, you should initialize it. This creates the necessary resources:
+
+```bash
+  mpt-tool migrate --init
+```
+
+This command creates:
+- The `migrations/` folder in your project root (if it doesn't exist)
+- The state storage:
+  - For **local storage**: creates `.migrations-state.json` file
+  - For **Airtable storage**: creates the table in Airtable with the required schema
+
+**When to use `--init`:**
+- First time setting up the tool in a project
+- When switching from local to Airtable storage (or vice versa)
+- When you need to recreate the state storage
+
+**Note:** If the state storage already exists, the command will fail with an error message. This prevents accidental data loss. If you need to reinitialize, manually delete the existing state file or table first.
 
 ## Usage
 
@@ -280,6 +305,14 @@ Run `mpt-tool --help` to see all available commands and params:
 ## Troubleshooting
 
 ### Common Issues
+
+**Initialization fails - state already exists:**
+- Error: "Cannot initialize - State file already exists" (local storage) or similar for Airtable
+- Cause: The state storage has already been initialized
+- Solution: This is intentional to prevent data loss. If you need to reinitialize:
+  - For local storage: delete `.migrations-state.json` manually
+  - For Airtable: delete the table manually or use a different table name
+- Only reinitialize if you're certain you want to start fresh
 
 **Migrations not detected:**
 - Ensure files are in the `migrations/` folder

@@ -9,6 +9,10 @@ class CreateMigrationError(ManagerError):
     """Error creating the migration file."""
 
 
+class InitializationError(ManagerError):
+    """Error during initialization."""
+
+
 class InvalidStateError(ManagerError):
     """Error loading invalid state."""
 
