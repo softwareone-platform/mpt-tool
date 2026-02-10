@@ -92,6 +92,7 @@ per-file-ignores = [
 ]
 
 [tool.ruff]
+# Ruff config: https://docs.astral.sh/ruff/settings
 preview = true
 target-version = "py312"
 output-format = "full"
@@ -99,7 +100,6 @@ line-length = 100
 
 [tool.ruff.format]
 quote-style = "double"
-docstring-code-format = false
 
 [tool.ruff.lint]
 select = [

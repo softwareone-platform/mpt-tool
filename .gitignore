@@ -167,7 +167,9 @@ cython_debug/
 .ruff_cache
 .idea
 
-# Specific project gitignore
+# Makefile
+make/local.mk
+
+# mpt-tool
 migrations/
 .migrations-state.json
-settings.py

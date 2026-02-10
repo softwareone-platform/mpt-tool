@@ -340,6 +340,18 @@ Run `mpt-service-cli --help` to see all available commands and params:
   - Create a new migration with the updated logic
 - Never modify an already-applied migration in production
 
+## Pre-commit
+
+Checking migrations with pre-commit:
+
+Add this to your .pre-commit-config.yaml
+
+```yaml
+-   repo: https://github.com/softwareone-platform/mpt-tool
+    rev: ''  # Use the sha / tag you want to point at
+    hooks:
+      - id: check-migrations
+```
 
 ## Development
 
