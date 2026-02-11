@@ -1,0 +1,8 @@
+- id: check-migrations
+  name: Check migrations
+  entry: mpt-service-cli migrate --check
+  language: python
+  pass_filenames: false
+  files: ^migrations/.*\.py$
+  exclude: __init__\.py$
+  description: Check for duplicate migration_id in migration files

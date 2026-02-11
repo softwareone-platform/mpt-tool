@@ -60,6 +60,19 @@ make test args="-k test_cli -vv"
 make test args="tests/test_cli.py"
 ```
 
+## Pre-commit
+
+Checking migrations with pre-commit:
+
+Add this to your .pre-commit-config.yaml
+
+```yaml
+-   repo: https://github.com/softwareone-platform/mpt-tool
+    rev: ''  # Use the sha / tag you want to point at
+    hooks:
+    -   id: check-migrations
+```
+
 ## Developer utilities
 
 Useful helper targets during development:
