@@ -8,8 +8,8 @@ bash:  ## Open a bash shell
 build:  ## Build images
 	$(DC) build
 
-check:  ## Check code quality with ruff
-	$(RUN) bash -c "ruff format --check . && ruff check . && flake8 . && uv lock --check"
+check:  ## Check code quality
+	$(RUN) bash -c "ruff format --check . && ruff check . && flake8 . && mypy . && uv lock --check"
 
 check-all:  check test ## Run checks and tests
 
