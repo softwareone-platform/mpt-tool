@@ -28,6 +28,14 @@ def test_migrate_command_multiple_params_error(runner):
     assert "Only one param can be used." in result.output
 
 
+def test_migrate_migration_id_without_type_error(runner):
+    result = runner.invoke(app, ["migrate", "fake_data_file_name"])
+
+    assert result.exit_code == 2, result.output
+    assert "Invalid value for migrate:" in result.output
+    assert "MIGRATION_ID can only be used with --data or" in result.output
+
+
 def test_migrate_data_duplicate_migration(runner, migration_folder):
     (migration_folder / "20250406020202_fake_file_name.py").touch()
     (migration_folder / "20260107010101_fake_file_name.py").touch()

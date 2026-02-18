@@ -1,5 +1,7 @@
+from mpt_tool.enums import MigrationStatusEnum
 from mpt_tool.managers import FileMigrationManager, StateManager, StateManagerFactory
 from mpt_tool.managers.errors import MigrationFolderError, StateNotFoundError
+from mpt_tool.services.migration_state import MigrationStateService
 from mpt_tool.use_cases.errors import ApplyMigrationError
 
 
@@ -10,9 +12,11 @@ class ApplyMigrationUseCase:
         self,
         file_migration_manager: FileMigrationManager | None = None,
         state_manager: StateManager | None = None,
+        state_service: MigrationStateService | None = None,
     ):
         self.file_migration_manager = file_migration_manager or FileMigrationManager()
         self.state_manager = state_manager or StateManagerFactory.get_instance()
+        self.state_service = state_service or MigrationStateService(self.state_manager)
 
     def execute(self, migration_id: str) -> None:
         """Apply a migration without running it."""
@@ -38,5 +42,4 @@ class ApplyMigrationUseCase:
         if state.applied_at is not None:
             raise ApplyMigrationError(f"Migration {migration_id} already applied")
 
-        state.manual()
-        self.state_manager.save_state(state)
+        self.state_service.save_state(state, status=MigrationStatusEnum.MANUAL_APPLIED)

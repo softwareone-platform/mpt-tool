@@ -35,10 +35,10 @@ class CommandFactory:
                 return InitCommand()
             case {"check": True}:
                 return CheckCommand()
-            case {"data": True}:
-                return DataCommand()
-            case {"schema": True}:
-                return SchemaCommand()
+            case {"data": True, "migration_id": migration_id}:
+                return DataCommand(migration_id=cast(str | None, migration_id))
+            case {"schema": True, "migration_id": migration_id}:
+                return SchemaCommand(migration_id=cast(str | None, migration_id))
             case {"manual": manual_value} if manual_value is not None:
                 return ManualCommand(migration_id=cast(str, manual_value))
             case {"new_schema": new_schema_value} if new_schema_value is not None:
