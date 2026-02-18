@@ -92,11 +92,11 @@ def test_migrate_data_run_script_fail(migration_state_file, runner, log):
 
 @freeze_time("2025-04-06 10:11:24")
 @pytest.mark.usefixtures("data_migration_file")
-def test_migrate_fake(migration_state_file, runner):
-    result = runner.invoke(app, ["migrate", "--fake", "fake_data_file_name"])
+def test_migrate_manual(migration_state_file, runner):
+    result = runner.invoke(app, ["migrate", "--manual", "fake_data_file_name"])
 
     assert result.exit_code == 0, result.output
-    assert "Running migration fake_data_file_name in fake mode." in result.output
+    assert "Running migration fake_data_file_name in manual mode." in result.output
     assert "Migration fake_data_file_name applied successfully." in result.output
     migration_state_data = json.loads(migration_state_file.read_text(encoding="utf-8"))
     assert migration_state_data == {
@@ -111,12 +111,13 @@ def test_migrate_fake(migration_state_file, runner):
 
 
 @pytest.mark.usefixtures("applied_migration")
-def test_migrate_fake_migration_already_applied(runner):
-    result = runner.invoke(app, ["migrate", "--fake", "fake_data_file_name"])
+def test_migrate_manual_migration_already_applied(runner):
+    result = runner.invoke(app, ["migrate", "--manual", "fake_data_file_name"])
 
     assert result.exit_code == 1, result.output
     assert (
-        "Error running fake command: Migration fake_data_file_name already applied" in result.output
+        "Error running manual command: Migration fake_data_file_name already applied"
+        in result.output
     )
 
 

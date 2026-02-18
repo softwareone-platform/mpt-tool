@@ -38,5 +38,5 @@ class ApplyMigrationUseCase:
         if state.applied_at is not None:
             raise ApplyMigrationError(f"Migration {migration_id} already applied")
 
-        state.fake()
+        state.manual()
         self.state_manager.save_state(state)

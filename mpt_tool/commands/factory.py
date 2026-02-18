@@ -6,9 +6,9 @@ from mpt_tool.commands.base import (
 from mpt_tool.commands.check import CheckCommand
 from mpt_tool.commands.data import DataCommand
 from mpt_tool.commands.errors import CommandNotFoundError
-from mpt_tool.commands.fake import FakeCommand
 from mpt_tool.commands.init import InitCommand
 from mpt_tool.commands.list import ListCommand
+from mpt_tool.commands.manual import ManualCommand
 from mpt_tool.commands.new_data import NewDataCommand
 from mpt_tool.commands.new_schema import NewSchemaCommand
 from mpt_tool.commands.schema import SchemaCommand
@@ -39,8 +39,8 @@ class CommandFactory:
                 return DataCommand()
             case {"schema": True}:
                 return SchemaCommand()
-            case {"fake": fake_value} if fake_value is not None:
-                return FakeCommand(migration_id=cast(str, fake_value))
+            case {"manual": manual_value} if manual_value is not None:
+                return ManualCommand(migration_id=cast(str, manual_value))
             case {"new_schema": new_schema_value} if new_schema_value is not None:
                 return NewSchemaCommand(migration_id=cast(str, new_schema_value))
             case {"new_data": new_data_value} if new_data_value is not None:

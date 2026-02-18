@@ -20,7 +20,7 @@ format:  ## Format code
 	$(RUN) bash -c "ruff check --select I --fix . && ruff format ."
 
 run:  ## Run service
-	$(DC) up
+	$(RUN_IT) bash -c "mpt-service-cli migrate --help && exec bash"
 
 shell:  ## Open Django shell
 	$(RUN_IT) bash -c "swoext shell"

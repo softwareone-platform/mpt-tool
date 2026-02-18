@@ -23,10 +23,10 @@ def migrate(  # noqa: WPS211
     ] = False,
     data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # noqa: FBT002
     schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # noqa: FBT002
-    fake: Annotated[
+    manual: Annotated[
         str | None,
         typer.Option(
-            "--fake",
+            "--manual",
             help="Mark the migration provided as applied without running it",
             metavar="MIGRATION_ID",
         ),
