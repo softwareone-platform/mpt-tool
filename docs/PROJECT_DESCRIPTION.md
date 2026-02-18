@@ -121,7 +121,7 @@ This command creates:
   mpt-service-cli migrate --new-schema "migration_name"
 ```
 
-A new file is created in `migrations/` with a timestamped prefix (e.g., `20260113180013_migration_name.py`) and a prefilled `Command` class.
+A new file is created in `migrations/` with a timestamped prefix (e.g., `20260113180013_migration_name.py`) and a prefilled `Migrate` class.
 
 order_id: timestamp prefix (e.g., `20260113180013`)
 migration_id: user-provided name (e.g., `migration_name`)
@@ -234,14 +234,14 @@ If a migration fails during execution:
 * The started_at timestamp is recorded
 * The applied_at field remains null
 * The error is logged
-* Later runs will retry the failed migration as applied_at is null, unless `--fake` is used to mark it as applied
+* Later runs will retry the failed migration as applied_at is null, unless `--manual` is used to mark it as applied
 
 
-### Fake Mode
+### Manual Mode
 To mark a migration as applied without running it:
 
 ```bash
-  mpt-service-cli migrate --fake MIGRATION_ID
+  mpt-service-cli migrate --manual MIGRATION_ID
 ```
 
 Where `MIGRATION_ID` is the filename without `order_id` and `.py` (e.g., `test1`).
@@ -273,7 +273,7 @@ The status column is derived from the persisted timestamps:
 |-------------|---------------------------------------------------------------|
 | running     | `started_at` is set and `applied_at` is empty                 |
 | failed      | `started_at` and `applied_at` are empty for an existing state |
-| faked       | `started_at` is empty and `applied_at` is set                 |
+| manual      | `started_at` is empty and `applied_at` is set                 |
 | applied     | Both `started_at` and `applied_at` are set                    |
 | not applied | No state entry exists for the migration file                  |
 
@@ -321,7 +321,7 @@ Run `mpt-service-cli --help` to see all available commands and params:
 **Migration fails to run:**
 - Review the error message in the terminal output
 - Check your `Migration.run()` implementation for syntax errors
-- Fix the issue and re-run the migration or use `--fake` to mark it as applied
+- Fix the issue and re-run the migration or use `--manual` to mark it as applied
 
 **NOTE:** There is currently no automatic rollback mechanism. If a migration partially modifies data before failing, you must manually revert those changes or create a new migration to fix the state.
 

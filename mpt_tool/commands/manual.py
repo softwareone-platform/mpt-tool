@@ -4,7 +4,7 @@ from mpt_tool.commands.base import BaseCommand
 from mpt_tool.use_cases import ApplyMigrationUseCase
 
 
-class FakeCommand(BaseCommand):
+class ManualCommand(BaseCommand):
     """Applies a migration without running it."""
 
     def __init__(self, migration_id: str):
@@ -14,7 +14,7 @@ class FakeCommand(BaseCommand):
     @override
     @property
     def start_message(self) -> str:
-        return f"Running migration {self.migration_id} in fake mode."
+        return f"Running migration {self.migration_id} in manual mode."
 
     @override
     @property

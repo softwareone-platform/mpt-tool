@@ -45,19 +45,21 @@ def test_migrate_data_migration_folder_not_found(runner):
     assert "Migration folder not found:" in result.output
 
 
-def test_migrate_fake_folder_not_found(runner):
-    result = runner.invoke(app, ["migrate", "--fake", "not_existing_migration"])
+def test_migrate_manual_folder_not_found(runner):
+    result = runner.invoke(app, ["migrate", "--manual", "not_existing_migration"])
 
     assert result.exit_code == 1, result.output
-    assert "Error running fake command: Migration folder not found: migrations" in result.output
+    assert "Error running manual command: Migration folder not found: migrations" in result.output
 
 
 @pytest.mark.usefixtures("data_migration_file")
-def test_migrate_fake_migration_not_found(runner):
-    result = runner.invoke(app, ["migrate", "--fake", "not_existing_migration"])
+def test_migrate_manual_migration_not_found(runner):
+    result = runner.invoke(app, ["migrate", "--manual", "not_existing_migration"])
 
     assert result.exit_code == 1, result.output
-    assert "Error running fake command: Migration not_existing_migration not found" in result.output
+    assert (
+        "Error running manual command: Migration not_existing_migration not found" in result.output
+    )
 
 
 @freeze_time("2025-04-06 12:21:34")

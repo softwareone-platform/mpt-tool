@@ -51,8 +51,8 @@ class Migration:
         self.started_at = None
         self.applied_at = None
 
-    def fake(self) -> None:
-        """Mark the migration as fake."""
+    def manual(self) -> None:
+        """Mark the migration as manual."""
         self.started_at = None
         self.applied_at = dt.datetime.now(tz=dt.UTC)
 

@@ -10,7 +10,7 @@ class MigrationStatusEnum(StrEnum):
 
     RUNNING = "running"
     FAILED = "failed"
-    FAKE_APPLY = "faked"
+    MANUAL_APPLIED = "manual"
     APPLIED = "applied"
     NOT_APPLIED = "not applied"
 
@@ -24,7 +24,7 @@ class MigrationStatusEnum(StrEnum):
         if migration_state.started_at and not migration_state.applied_at:
             return cls.RUNNING
         if migration_state.started_at is None and migration_state.applied_at:
-            return cls.FAKE_APPLY
+            return cls.MANUAL_APPLIED
 
         return cls.FAILED
 
