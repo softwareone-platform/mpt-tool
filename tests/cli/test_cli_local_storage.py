@@ -51,6 +51,27 @@ def test_migrate_data_migration(migration_state_file, runner, log):
     assert "Migrations completed successfully." in result.output
 
 
+@freeze_time("2025-04-06 13:10:30")
+@pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
+def test_migrate_data_single_migration(migration_state_file, runner, log):
+    result = runner.invoke(app, ["migrate", "--data", "fake_data_file_name"])
+
+    assert result.exit_code == 0, result.output
+    migration_state_data = json.loads(migration_state_file.read_text(encoding="utf-8"))
+    assert migration_state_data == {
+        "fake_data_file_name": {
+            "migration_id": "fake_data_file_name",
+            "order_id": 20250406020202,
+            "type": "data",
+            "started_at": "2025-04-06T13:10:30+00:00",
+            "applied_at": "2025-04-06T13:10:30+00:00",
+        }
+    }
+    assert "Running data migrations..." in result.output
+    assert "Running migration: fake_data_file_name" in log.text
+    assert "Migrations completed successfully." in result.output
+
+
 @freeze_time("2025-04-06 13:00:00")
 @pytest.mark.usefixtures("applied_migration")
 def test_migrate_skip_migration_already_applied(migration_state_file, runner, log):
@@ -72,6 +93,16 @@ def test_migrate_skip_migration_already_applied(migration_state_file, runner, lo
     assert "Migrations completed successfully." in result.output
 
 
+@pytest.mark.usefixtures("applied_migration")
+def test_migrate_data_single_already_applied(runner):
+    result = runner.invoke(app, ["migrate", "--data", "fake_data_file_name"])
+
+    assert result.exit_code == 1, result.output
+    assert (
+        "Error running data command: Migration fake_data_file_name already applied" in result.output
+    )
+
+
 @pytest.mark.usefixtures("data_migration_file_error")
 def test_migrate_data_run_script_fail(migration_state_file, runner, log):
     result = runner.invoke(app, ["migrate", "--data"])
@@ -88,6 +119,46 @@ def test_migrate_data_run_script_fail(migration_state_file, runner, log):
     assert "Running data migrations..." in result.output
     assert "Running migration: fake_error_file_name" in log.text
     assert "Migration fake_error_file_name failed: Fake Error" in result.output
+
+
+@pytest.mark.usefixtures("data_migration_file")
+def test_migrate_data_single_migration_not_found(runner):
+    result = runner.invoke(app, ["migrate", "--data", "not_existing_migration"])
+
+    assert result.exit_code == 1, result.output
+    assert "Error running data command: Migration not_existing_migration not found" in result.output
+
+
+@pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
+def test_migrate_data_single_migration_wrong_type(runner):
+    result = runner.invoke(app, ["migrate", "--data", "fake_schema_file_name"])
+
+    assert result.exit_code == 1, result.output
+    assert (
+        "Error running data command: Migration fake_schema_file_name is not a data migration"
+        in result.output
+    )
+
+
+@freeze_time("2025-04-06 13:10:30")
+@pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
+def test_migrate_schema_single_migration(migration_state_file, runner, log):
+    result = runner.invoke(app, ["migrate", "--schema", "fake_schema_file_name"])
+
+    assert result.exit_code == 0, result.output
+    migration_state_data = json.loads(migration_state_file.read_text(encoding="utf-8"))
+    assert migration_state_data == {
+        "fake_schema_file_name": {
+            "migration_id": "fake_schema_file_name",
+            "order_id": 20260101010101,
+            "type": "schema",
+            "started_at": "2025-04-06T13:10:30+00:00",
+            "applied_at": "2025-04-06T13:10:30+00:00",
+        }
+    }
+    assert "Running schema migrations..." in result.output
+    assert "Running migration: fake_schema_file_name" in log.text
+    assert "schema migrations applied successfully." in result.output
 
 
 @freeze_time("2025-04-06 10:11:24")

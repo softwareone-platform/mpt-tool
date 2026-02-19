@@ -16,7 +16,14 @@ class MigrateCommandValidator:
         Raises:
             BadParameterError: When none or more than one param is used
         """
-        param_counts = sum(1 for param_value in command_params.values() if param_value)
+        migration_id = command_params.get("migration_id")
+        command_values = {
+            key: param_value for key, param_value in command_params.items() if key != "migration_id"
+        }
+        param_counts = sum(1 for param_value in command_values.values() if param_value)
+        if migration_id and not command_params.get("data") and not command_params.get("schema"):
+            raise BadParameterError("MIGRATION_ID can only be used with --data or --schema.")
+
         if not param_counts:
             raise BadParameterError("At least one param must be used.")
 

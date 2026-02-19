@@ -2,11 +2,14 @@ from typing import override
 
 from mpt_tool.commands.base import BaseCommand
 from mpt_tool.enums import MigrationTypeEnum
-from mpt_tool.use_cases import RunMigrationsUseCase
+from mpt_tool.use_cases import RunMigrationsUseCase, RunSingleMigrationUseCase
 
 
 class SchemaCommand(BaseCommand):
     """Runs all schema migrations."""
+
+    def __init__(self, migration_id: str | None = None) -> None:
+        self._migration_id = migration_id
 
     @override
     @property
@@ -20,4 +23,8 @@ class SchemaCommand(BaseCommand):
 
     @override
     def run(self) -> None:
+        if self._migration_id:
+            RunSingleMigrationUseCase().execute(self._migration_id, MigrationTypeEnum.SCHEMA)
+            return
+
         RunMigrationsUseCase().execute(MigrationTypeEnum.SCHEMA)

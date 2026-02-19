@@ -4,6 +4,7 @@ from mpt_tool.use_cases.initialize import InitializeUseCase
 from mpt_tool.use_cases.list_migrations import ListMigrationsUseCase
 from mpt_tool.use_cases.new_migration import NewMigrationUseCase
 from mpt_tool.use_cases.run_migrations import RunMigrationsUseCase
+from mpt_tool.use_cases.run_single_migration import RunSingleMigrationUseCase
 
 __all__ = [
     "ApplyMigrationUseCase",
@@ -12,4 +13,5 @@ __all__ = [
     "ListMigrationsUseCase",
     "NewMigrationUseCase",
     "RunMigrationsUseCase",
+    "RunSingleMigrationUseCase",
 ]

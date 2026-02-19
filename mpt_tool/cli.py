@@ -51,6 +51,9 @@ def migrate(  # noqa: WPS211
         ),
     ] = None,
     list: Annotated[bool, typer.Option("--list", help="List all migrations.")] = False,  # noqa: A002, FBT002
+    migration_id: Annotated[
+        str | None, typer.Argument(help="Optional migration ID for --data or --schema.")
+    ] = None,
 ) -> None:
     """Migrate command."""
     try:

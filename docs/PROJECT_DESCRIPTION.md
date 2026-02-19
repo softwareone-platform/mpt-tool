@@ -191,6 +191,14 @@ Error running check command: Duplicate migration_id found in migrations: 2026011
   ```bash
   mpt-service-cli migrate --schema
   ```
+- **Run one specific data migration:**
+  ```bash
+  mpt-service-cli migrate --data MIGRATION_ID
+  ```
+- **Run one specific schema migration:**
+  ```bash
+  mpt-service-cli migrate --schema MIGRATION_ID
+  ```
 
 Migrations are executed in order based on their order_id (timestamp). The tool automatically:
 - Validates the migration folder structure
@@ -198,6 +206,11 @@ Migrations are executed in order based on their order_id (timestamp). The tool a
 - Tracks execution status in the state storage (`.migrations-state.json` or Airtable table)
 - Logs migration progress
 - Handles errors gracefully and updates state accordingly
+
+When running a single migration (`--data MIGRATION_ID` or `--schema MIGRATION_ID`), the tool:
+- Fails if `MIGRATION_ID` does not exist
+- Fails if the migration type does not match the selected flag
+- Fails if the migration was already applied
 
 **Migration State File (`.migrations-state.json`):**
 ```json
