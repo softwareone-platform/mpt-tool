@@ -8,9 +8,9 @@ readme = "docs/PROJECT_DESCRIPTION.md"
 license = {text = "Apache-2.0 license"}
 
 dependencies = [
-  "mpt-api-client==5.0.*",
+  "mpt-api-client==5.1.*",
   "pyairtable==3.3.*",
-  "typer==0.23.*",
+  "typer==0.24.*",
 ]
 
 [project.scripts]
