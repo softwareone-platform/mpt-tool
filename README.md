@@ -113,11 +113,12 @@ The following environment variables are typically set in `.env`. Docker Compose 
 
 ### Application
 
-| Environment Variable                   | Default                 | Example                                   | Description                                                                               |
-|----------------------------------------|-------------------------|-------------------------------------------|-------------------------------------------------------------------------------------------|
-| `MPT_API_BASE_URL`                     | `http://localhost:8000` | `https://portal.softwareone.com/mpt`      | SoftwareONE Marketplace API URL                                                           |
-| `MPT_API_TOKEN`                        | -                       | eyJhbGciOiJSUzI1N...                      | SoftwareONE Marketplace API Token                                                         |
-| `MPT_TOOL_STORAGE_TYPE`                | `local`                 | `airtable`                                | Storage type for MPT tools (local or airtable)                                            |
-| `MPT_TOOL_STORAGE_AIRTABLE_API_KEY`    | -                       | patXXXXXXXXXXXXXX                         | Airtable API key for MPT tool storage (required when storage type is airtable)            |
-| `MPT_TOOL_STORAGE_AIRTABLE_BASE_ID`    | -                       | appXXXXXXXXXXXXXX                         | Airtable base ID for MPT tool storage (required when storage type is airtable)            |
-| `MPT_TOOL_STORAGE_AIRTABLE_TABLE_NAME` | -                       | MigrationTracking                         | Airtable table name for MPT tool storage (required when storage type is airtable)         |
+| Environment Variable                   | Default                 | Example                              | Description                                                                                 |
+|----------------------------------------|-------------------------|--------------------------------------|---------------------------------------------------------------------------------------------|
+| `MPT_API_BASE_URL`                     | `http://localhost:8000` | `https://portal.softwareone.com/mpt` | SoftwareONE Marketplace API URL                                                             |
+| `MPT_API_TOKEN`                        | -                       | eyJhbGciOiJSUzI1N...                 | SoftwareONE Marketplace API Token                                                           |
+| `MPT_TOOL_STORAGE_TYPE`                | `local`                 | `airtable`                           | Storage type for MPT tools (local or airtable)                                              |
+| `MPT_TOOL_STORAGE_AIRTABLE_API_KEY`    | -                       | patXXXXXXXXXXXXXX                    | Airtable API key for MPT tool storage (required when storage type is airtable)              |
+| `MPT_TOOL_STORAGE_AIRTABLE_BASE_ID`    | -                       | appXXXXXXXXXXXXXX                    | Airtable base ID for MPT tool storage (required when storage type is airtable)              |
+| `MPT_TOOL_STORAGE_AIRTABLE_TABLE_NAME` | -                       | MigrationTracking                    | Airtable table name for MPT tool storage (required when storage type is airtable)           |
+| `SERVICE_VERSION`                      | empty                   | `5.4.2`                              | Optional service version saved in migration state when a migration state is created         |

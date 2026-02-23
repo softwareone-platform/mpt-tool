@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import override
 
+from mpt_tool.config import get_service_version
 from mpt_tool.constants import MIGRATION_STATE_FILE
 from mpt_tool.enums import MigrationTypeEnum
 from mpt_tool.managers import StateManager
@@ -61,6 +62,7 @@ class FileStateManager(StateManager):
             migration_id=migration_id,
             order_id=order_id,
             type=migration_type,
+            version=get_service_version(),
         )
         cls.save_state(new_state)
         return new_state

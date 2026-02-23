@@ -5,7 +5,7 @@ from pyairtable.formulas import match
 from pyairtable.orm import Model, fields
 from requests import HTTPError
 
-from mpt_tool.config import get_airtable_config
+from mpt_tool.config import get_airtable_config, get_service_version
 from mpt_tool.enums import MigrationTypeEnum
 from mpt_tool.managers import StateManager
 from mpt_tool.managers.errors import InitializationError, StateNotFoundError
@@ -20,6 +20,7 @@ class MigrationStateModel(Model):
     type = fields.RequiredSelectField("type")
     started_at = fields.DatetimeField("started_at")
     applied_at = fields.DatetimeField("applied_at")
+    version = fields.TextField("version")
 
     class Meta:
         @staticmethod
@@ -64,6 +65,7 @@ class AirtableStateManager(StateManager):
             type=MigrationTypeEnum(state.type),
             started_at=state.started_at,
             applied_at=state.applied_at,
+            version=state.version,
         )
 
     @override
@@ -105,6 +107,7 @@ class AirtableStateManager(StateManager):
                     "timeZone": "utc",
                 },
             },
+            {"name": "version", "type": "singleLineText"},
         ]
         try:
             base.create_table(table_name, fields=table_fields)
@@ -122,6 +125,7 @@ class AirtableStateManager(StateManager):
                 type=MigrationTypeEnum(state.type),
                 started_at=state.started_at,
                 applied_at=state.applied_at,
+                version=state.version,
             )
             migrations[migration.migration_id] = migration
 
@@ -131,7 +135,10 @@ class AirtableStateManager(StateManager):
     @classmethod
     def new(cls, migration_id: str, migration_type: MigrationTypeEnum, order_id: int) -> Migration:
         state = MigrationStateModel(
-            migration_id=migration_id, order_id=order_id, type=migration_type.value
+            migration_id=migration_id,
+            order_id=order_id,
+            type=migration_type.value,
+            version=get_service_version(),
         )
         state.save()
         return Migration(
@@ -140,6 +147,7 @@ class AirtableStateManager(StateManager):
             type=MigrationTypeEnum(state.type),
             started_at=state.started_at,
             applied_at=state.applied_at,
+            version=state.version,
         )
 
     @override
@@ -153,6 +161,7 @@ class AirtableStateManager(StateManager):
             migration_state_model.type = state.type.value
             migration_state_model.started_at = state.started_at
             migration_state_model.applied_at = state.applied_at
+            migration_state_model.version = state.version
         else:
             migration_state_model = MigrationStateModel(
                 migration_id=state.migration_id,
@@ -160,6 +169,7 @@ class AirtableStateManager(StateManager):
                 type=state.type.value,
                 started_at=state.started_at,
                 applied_at=state.applied_at,
+                version=state.version,
             )
 
         migration_state_model.save()

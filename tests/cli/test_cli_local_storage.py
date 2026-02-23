@@ -23,6 +23,7 @@ def applied_migration(data_migration_file, migration_state_file):
             "type": "data",
             "started_at": "2025-04-06T13:10:20+00:00",
             "applied_at": "2025-04-06T13:10:30+00:00",
+            "version": "5.3.2",
         }
     }
     migration_state_file.write_text(encoding="utf-8", data=json.dumps(applied_state_data))
@@ -32,7 +33,9 @@ def applied_migration(data_migration_file, migration_state_file):
 
 @freeze_time("2025-04-06 13:10:30")
 @pytest.mark.usefixtures("data_migration_file", "schema_migration_file")
-def test_migrate_data_migration(migration_state_file, runner, log):
+def test_migrate_data_migration(monkeypatch, migration_state_file, runner, log):
+    monkeypatch.setenv("SERVICE_VERSION", "1.2.3")
+
     result = runner.invoke(app, ["migrate", "--data"])
 
     assert result.exit_code == 0, result.output
@@ -44,6 +47,7 @@ def test_migrate_data_migration(migration_state_file, runner, log):
             "type": "data",
             "started_at": "2025-04-06T13:10:30+00:00",
             "applied_at": "2025-04-06T13:10:30+00:00",
+            "version": "1.2.3",
         }
     }
     assert "Running data migrations..." in result.output
@@ -65,6 +69,7 @@ def test_migrate_data_single_migration(migration_state_file, runner, log):
             "type": "data",
             "started_at": "2025-04-06T13:10:30+00:00",
             "applied_at": "2025-04-06T13:10:30+00:00",
+            "version": None,
         }
     }
     assert "Running data migrations..." in result.output
@@ -86,6 +91,7 @@ def test_migrate_skip_migration_already_applied(migration_state_file, runner, lo
             "type": "data",
             "started_at": "2025-04-06T13:10:20+00:00",
             "applied_at": "2025-04-06T13:10:30+00:00",
+            "version": "5.3.2",
         }
     }
     assert "Running data migrations..." in result.output
@@ -115,6 +121,7 @@ def test_migrate_data_run_script_fail(migration_state_file, runner, log):
         "type": "data",
         "started_at": None,
         "applied_at": None,
+        "version": None,
     }
     assert "Running data migrations..." in result.output
     assert "Running migration: fake_error_file_name" in log.text
@@ -154,6 +161,7 @@ def test_migrate_schema_single_migration(migration_state_file, runner, log):
             "type": "schema",
             "started_at": "2025-04-06T13:10:30+00:00",
             "applied_at": "2025-04-06T13:10:30+00:00",
+            "version": None,
         }
     }
     assert "Running schema migrations..." in result.output
@@ -177,6 +185,7 @@ def test_migrate_manual(migration_state_file, runner):
             "type": "data",
             "started_at": None,
             "applied_at": "2025-04-06T10:11:24+00:00",
+            "version": None,
         }
     }
 
@@ -219,9 +228,9 @@ def test_migrate_list(runner, log):
     assert result.exit_code == 0, result.output
     assert "No state found for migration: fake_schema_file_name" in log.text
     formatted_output = "".join(result.output.split())
-    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃" in formatted_output
+    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃version┃" in formatted_output
     assert (
-        "│20250406020202│fake_data_file_name│2025-04-06T13:10:20+00:00│2025-04-06T13:10:30+00:00│data│Applied│"
+        "│20250406020202│fake_data_file_name│2025-04-06T13:10:20+00:00│2025-04-06T13:10:30+00:00│data│Applied│5.3.2│"
         in formatted_output
     )
-    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│" in formatted_output
+    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│-│" in formatted_output

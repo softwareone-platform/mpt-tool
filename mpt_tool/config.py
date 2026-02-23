@@ -17,6 +17,11 @@ def get_mpt_config(config_key: str) -> str | None:
     return config.get(config_key)
 
 
+def get_service_version() -> str | None:
+    """Get service version."""
+    return os.getenv("SERVICE_VERSION")
+
+
 def get_storage_type() -> str:
     """Get storage type."""
     return os.getenv("MPT_TOOL_STORAGE_TYPE", "local")

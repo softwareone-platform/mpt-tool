@@ -14,8 +14,10 @@ class Migration:
     migration_id: str
     order_id: int
     type: MigrationTypeEnum
-    started_at: dt.datetime | None = None
+
     applied_at: dt.datetime | None = None
+    started_at: dt.datetime | None = None
+    version: str | None = None
 
     @classmethod
     def from_dict(cls, migration_data: dict[str, Any]) -> Self:
@@ -24,12 +26,13 @@ class Migration:
             migration_id=migration_data["migration_id"],
             order_id=migration_data["order_id"],
             type=MigrationTypeEnum(migration_data["type"]),
-            started_at=dt.datetime.fromisoformat(migration_data["started_at"])
-            if migration_data["started_at"]
-            else None,
             applied_at=dt.datetime.fromisoformat(migration_data["applied_at"])
             if migration_data["applied_at"]
             else None,
+            started_at=dt.datetime.fromisoformat(migration_data["started_at"])
+            if migration_data["started_at"]
+            else None,
+            version=migration_data.get("version"),
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -38,8 +41,9 @@ class Migration:
             "migration_id": self.migration_id,
             "order_id": self.order_id,
             "type": self.type.value,
-            "started_at": self.started_at.isoformat() if self.started_at else None,
             "applied_at": self.applied_at.isoformat() if self.applied_at else None,
+            "started_at": self.started_at.isoformat() if self.started_at else None,
+            "version": self.version,
         }
 
     def applied(self) -> None:
@@ -48,8 +52,9 @@ class Migration:
 
     def failed(self) -> None:
         """Mark the migration as failed."""
-        self.started_at = None
         self.applied_at = None
+        self.started_at = None
+        self.version = None
 
     def manual(self) -> None:
         """Mark the migration as manual."""
@@ -118,10 +123,12 @@ class MigrationListItem:
 
     migration_id: str
     order_id: int
-    migration_type: MigrationTypeEnum | None
-    started_at: dt.datetime | None
-    applied_at: dt.datetime | None
     status: MigrationStatusEnum
+
+    applied_at: dt.datetime | None = None
+    migration_type: MigrationTypeEnum | None = None
+    started_at: dt.datetime | None = None
+    version: str | None = None
 
     @classmethod
     def from_sources(
@@ -133,8 +140,9 @@ class MigrationListItem:
         return cls(
             migration_id=migration_file.migration_id,
             order_id=migration_file.order_id,
+            status=MigrationStatusEnum.from_state(migration_state),
+            applied_at=migration_state.applied_at if migration_state else None,
             migration_type=migration_state.type if migration_state else None,
             started_at=migration_state.started_at if migration_state else None,
-            applied_at=migration_state.applied_at if migration_state else None,
-            status=MigrationStatusEnum.from_state(migration_state),
+            version=migration_state.version if migration_state else None,
         )
