@@ -33,6 +33,7 @@ def applied_migration(data_migration_file, mock_airtable):
                 "type": "data",
                 "started_at": "2025-04-06T13:00:00+00:00",
                 "applied_at": "2025-04-06T13:00:00+00:00",
+                "version": None,
             }
         ],
     )
@@ -54,6 +55,7 @@ def test_migrate_data_migration(mock_airtable, runner, log):
         "type": "data",
         "started_at": "2025-04-06T13:00:10.000Z",
         "applied_at": "2025-04-06T13:00:10.000Z",
+        "version": "",
     }
     assert "Running data migrations..." in result.output
     assert "Running migration: fake_data_file_name" in log.text
@@ -73,7 +75,9 @@ def test_migrate_skip_migration_already_applied(runner, log):
 
 @freeze_time("2025-04-06 13:00:00")
 @pytest.mark.usefixtures("data_migration_file_error")
-def test_migrate_data_run_script_fail(mock_airtable, runner, log):
+def test_migrate_data_run_script_fail(monkeypatch, mock_airtable, runner, log):
+    monkeypatch.setenv("SERVICE_VERSION", "5.1.2")
+
     result = runner.invoke(app, ["migrate", "--data"])
 
     assert result.exit_code == 1, result.output
@@ -85,6 +89,7 @@ def test_migrate_data_run_script_fail(mock_airtable, runner, log):
         "type": "data",
         "started_at": None,
         "applied_at": None,
+        "version": None,
     }
     assert "Running data migrations..." in result.output
     assert "Running migration: fake_error_file_name" in log.text
@@ -93,7 +98,9 @@ def test_migrate_data_run_script_fail(mock_airtable, runner, log):
 
 @freeze_time("2025-04-06 10:11:24")
 @pytest.mark.usefixtures("data_migration_file")
-def test_migrate_manual(mock_airtable, runner):
+def test_migrate_manual(monkeypatch, mock_airtable, runner):
+    monkeypatch.setenv("SERVICE_VERSION", "5.2.3")
+
     result = runner.invoke(app, ["migrate", "--manual", "fake_data_file_name"])
 
     assert result.exit_code == 0, result.output
@@ -107,6 +114,7 @@ def test_migrate_manual(mock_airtable, runner):
         "type": "data",
         "started_at": None,
         "applied_at": "2025-04-06T10:11:24.000Z",
+        "version": "5.2.3",
     }
 
 
@@ -158,6 +166,7 @@ def test_migrate_init(mocker, runner):
                     "timeZone": "utc",
                 },
             },
+            {"name": "version", "type": "singleLineText"},
         ],
     )
 
@@ -182,9 +191,9 @@ def test_migrate_list(runner, log):
     assert result.exit_code == 0, result.output
     assert "No state found for migration: fake_schema_file_name" in log.text
     formatted_output = "".join(result.output.split())
-    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃" in formatted_output
+    assert "┃order_id┃migration_id┃started_at┃applied_at┃type┃status┃version┃" in formatted_output
     assert (
-        "│20250406020202│fake_data_file_name│2025-04-06T13:00:00+00:00│2025-04-06T13:00:00+00:00│data│Applied│"
+        "│20250406020202│fake_data_file_name│2025-04-06T13:00:00+00:00│2025-04-06T13:00:00+00:00│data│Applied│-│"
         in formatted_output
     )
-    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│" in formatted_output
+    assert "│20260101010101│fake_schema_file_name│-│-│-│NotApplied│-│" in formatted_output

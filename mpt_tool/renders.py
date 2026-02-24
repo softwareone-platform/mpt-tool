@@ -7,7 +7,7 @@ from mpt_tool.models import MigrationListItem
 class MigrationRender:
     """Render migration state information as a formatted table."""
 
-    _fields = ("order_id", "migration_id", "started_at", "applied_at", "type", "status")
+    _fields = ("order_id", "migration_id", "started_at", "applied_at", "type", "status", "version")
 
     def __init__(self, migration_items: list[MigrationListItem]):
         self.migration_items = migration_items
@@ -25,6 +25,7 @@ class MigrationRender:
                 migration.applied_at.isoformat(timespec="seconds") if migration.applied_at else "-",
                 migration.migration_type.value if migration.migration_type else "-",
                 migration.status.title(),
+                migration.version or "-",
             )
 
         yield table

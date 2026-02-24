@@ -46,6 +46,7 @@ The tool uses the following environment variables:
 - `MPT_API_TOKEN`: Your MPT API key (required when using `MPTAPIClientMixin`)
 - `MPT_TOOL_STORAGE_TYPE`: Storage backend for migration state (`local` or `airtable`, default: `local`). See [Storage Configuration](#storage)
 - `MPT_TOOL_STORAGE_AIRTABLE_API_KEY`: Your Airtable API key (required when using `AirtableAPIClientMixin` or when `MPT_TOOL_STORAGE_TYPE=airtable`)
+- `SERVICE_VERSION`: Optional service version persisted into each new migration state. If missing, the stored value is empty
 
 ## Configuration
 
@@ -77,6 +78,7 @@ Your Airtable table must have the following columns:
 | started_at    | dateTime                    |    ❌     |
 | applied_at    | dateTime                    |    ❌     |
 | type          | singleSelect (data, schema) |    ✅     |
+| version       | singleLineText              |    ❌     |
 
 
 **Airtable configuration steps:**
@@ -220,23 +222,25 @@ When running a single migration (`--data MIGRATION_ID` or `--schema MIGRATION_ID
     "order_id": 20260113180013,
     "started_at": "2026-01-13T18:05:20.000000",
     "applied_at": "2026-01-13T18:05:23.123456",
-    "type": "data"
+    "type": "data",
+    "version": "5.3.2"
   },
   "schema_example": {
     "migration_id": "schema_example",
     "order_id": 20260214121033,
     "started_at": null,
     "applied_at": null,
-    "type": "schema"
+    "type": "schema",
+    "version": ""
   }
 }
 ```
 **Migration Table (Airtable):**
 
-| order_id       | migration_id   | started_at                 | applied_at                 | type   |
-|----------------|----------------|----------------------------|----------------------------|--------|
-| 20260113180013 | data_example   | 2026-01-13T18:05:20.000000 | 2026-01-13T18:05:23.123456 | data   |
-| 20260214121033 | schema_example |                            |                            | schema |
+| order_id       | migration_id   | started_at                 | applied_at                 | type   | version |
+|----------------|----------------|----------------------------|----------------------------|--------|---------|
+| 20260113180013 | data_example   | 2026-01-13T18:05:20.000000 | 2026-01-13T18:05:23.123456 | data   | 5.3.2   |
+| 20260214121033 | schema_example |                            |                            | schema |         |
 
 
 If a migration succeeds during execution:
@@ -279,6 +283,9 @@ To see all migrations and their status:
 ```
 
 The output shows execution order, status, and timestamps.
+It also shows the `version` column as the last column:
+- Applied/created state: value from `SERVICE_VERSION`, or empty if the variable is not set
+- Not applied (no state yet): `-`
 
 The status column is derived from the persisted timestamps:
 
