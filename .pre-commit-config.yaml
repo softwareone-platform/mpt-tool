@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.7
+    rev: v0.15.8
     hooks:
       - id: ruff-check
       - id: ruff-format
@@ -42,5 +42,5 @@ repos:
         additional_dependencies:
           - mpt_api_client==5.0.*
           - typer==0.21.*
-          - types-requests==2.32.*
+          - types-requests==2.33.*
           - pyairtable==3.3.*
