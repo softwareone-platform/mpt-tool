@@ -4,7 +4,7 @@ version = "0.0.0"
 description = "Migration tool for extensions"
 authors = [{ name = "SoftwareOne AG" }]
 requires-python = ">=3.12,<4"
-readme = "docs/PROJECT_DESCRIPTION.md"
+readme = "README.md"
 license = {text = "Apache-2.0 license"}
 
 dependencies = [
