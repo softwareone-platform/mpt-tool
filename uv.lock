@@ -569,15 +569,15 @@ wheels = [
 
 [[package]]
 name = "mpt-api-client"
-version = "6.0.0"
+version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "httpx-retries" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/87/c62ac89f262d68410319ad190fd24eb300200028250b51fd01128e53878f/mpt_api_client-6.0.0.tar.gz", hash = "sha256:83e689c38771c84992acd148a171541b93ba9fbd919284186be505d31ecf8863", size = 59570, upload-time = "2026-04-21T13:38:39.888Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/2c/bf2e0afa1b01dfa40671a2c6850909631eee0f6869a1a384a03f64f3a838/mpt_api_client-6.1.0.tar.gz", hash = "sha256:722fa5272789ff923d2941f7e58adedeac77e6ffcdfbbb8e444a444304d0ef08", size = 60724, upload-time = "2026-05-04T12:15:41.821Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/97/d4f2e38c609435376a300aff2d253a90b8694114f5a7e55bd33b428d35ac/mpt_api_client-6.0.0-py3-none-any.whl", hash = "sha256:04b8c8710171f65962fd646fdd9f68bd1c5be158976891485bba46c95bd87f72", size = 136566, upload-time = "2026-04-21T13:38:38.657Z" },
+    { url = "https://files.pythonhosted.org/packages/80/12/62a2e9381222ba028b9db99c385378bcacbaee639b9842debd6c6e285fd9/mpt_api_client-6.1.0-py3-none-any.whl", hash = "sha256:88a01c447b943d827960825ea257eee0235ce4f53cf1abc7db835f6803e93d8e", size = 139178, upload-time = "2026-05-04T12:15:40.606Z" },
 ]
 
 [[package]]
@@ -611,7 +611,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mpt-api-client", specifier = "==6.0.*" },
+    { name = "mpt-api-client", specifier = "==6.1.*" },
     { name = "pyairtable", specifier = "==3.3.*" },
     { name = "typer", specifier = "==0.25.*" },
 ]
@@ -1164,7 +1164,7 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.25.0"
+version = "0.25.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
@@ -1172,9 +1172,9 @@ dependencies = [
     { name = "rich" },
     { name = "shellingham" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/27/ede8cec7596e0041ba7e7b80b47d132562f56ff454313a16f6084e555c9f/typer-0.25.0.tar.gz", hash = "sha256:123eaf9f19bb40fd268310e12a542c0c6b4fab9c98d9d23342a01ff95e3ce930", size = 120150, upload-time = "2026-04-26T08:46:14.767Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/51/9aed62104cea109b820bbd6c14245af756112017d309da813ef107d42e7e/typer-0.25.1.tar.gz", hash = "sha256:9616eb8853a09ffeabab1698952f33c6f29ffdbceb4eaeecf571880e8d7664cc", size = 122276, upload-time = "2026-04-30T19:32:16.964Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9a/72/193d4e586ec5a4db834a36bbeb47641a62f951f114ffd0fe5b1b46e8d56f/typer-0.25.0-py3-none-any.whl", hash = "sha256:ac01b48823d3db9a83c9e164338057eadbb1c9957a2a6b4eeb486669c560b5dc", size = 55993, upload-time = "2026-04-26T08:46:15.889Z" },
+    { url = "https://files.pythonhosted.org/packages/3f/f9/2b3ff4e56e5fa7debfaf9eb135d0da96f3e9a1d5b27222223c7296336e5f/typer-0.25.1-py3-none-any.whl", hash = "sha256:75caa44ed46a03fb2dab8808753ffacdbfea88495e74c85a28c5eefcf5f39c89", size = 58409, upload-time = "2026-04-30T19:32:18.271Z" },
 ]
 
 [[package]]
