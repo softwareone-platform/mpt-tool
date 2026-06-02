@@ -10,7 +10,7 @@ license = {text = "Apache-2.0 license"}
 dependencies = [
   "mpt-api-client==6.1.*",
   "pyairtable==3.3.*",
-  "typer==0.25.*",
+  "typer==0.26.*",
 ]
 
 [project.scripts]
