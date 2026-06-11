@@ -125,6 +125,17 @@ class Migration(DataBaseMigration):
         pass
 ```
 
+A schema migration (`--new-schema`) uses `SchemaBaseMigration` instead:
+
+```python
+from mpt_tool.migration import SchemaBaseMigration
+
+
+class Migration(SchemaBaseMigration):
+    def run(self):
+        pass
+```
+
 ### Use Mixins
 
 Mixins can provide preconfigured clients inside migration code:

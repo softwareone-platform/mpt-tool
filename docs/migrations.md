@@ -41,3 +41,5 @@ Repository-specific flow:
 - [`mpt_tool/use_cases/run_migrations.py`](../mpt_tool/use_cases/run_migrations.py)
 - [`mpt_tool/use_cases/run_single_migration.py`](../mpt_tool/use_cases/run_single_migration.py)
 - [`mpt_tool/use_cases/check_migrations.py`](../mpt_tool/use_cases/check_migrations.py)
+- [`mpt_tool/use_cases/apply_migration.py`](../mpt_tool/use_cases/apply_migration.py)
+- [`mpt_tool/use_cases/list_migrations.py`](../mpt_tool/use_cases/list_migrations.py)
