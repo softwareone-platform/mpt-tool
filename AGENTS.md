@@ -22,7 +22,7 @@ Then inspect the code paths relevant to the task:
 
 - [`mpt_tool/cli.py`](mpt_tool/cli.py): Typer entry point and CLI command registration
 - [`mpt_tool/commands/`](mpt_tool/commands): command parsing, validation, and command-to-use-case mapping
-- [`mpt_tool/use_cases/`](mpt_tool/use_cases): execution flows for init, checks, listing, scaffolding, and migration runs
+- [`mpt_tool/use_cases/`](mpt_tool/use_cases): execution flows for init, checks, listing, scaffolding, applying, and migration runs
 - [`mpt_tool/migration/`](mpt_tool/migration): base migration types and mixins exposed to migration authors
 - [`mpt_tool/managers/state/`](mpt_tool/managers/state): storage backend implementations and factory selection
 - [`mpt_tool/services/migration_state.py`](mpt_tool/services/migration_state.py): migration state lifecycle updates
