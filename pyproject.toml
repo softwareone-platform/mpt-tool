@@ -26,7 +26,7 @@ dev = [
   "ipython==9.*",
   "mypy==2.1.*",
   "pre-commit==4.6.*",
-  "pytest==9.0.*",
+  "pytest==9.1.*",
   "pytest-cov==7.1.*",
   "pytest-deadfixtures==3.1.*",
   "pytest-mock==3.15.*",
@@ -191,6 +191,7 @@ convention = "google"
   "S404", # subprocess calls are for tests
   "S603", # do not require `shell=True`
   "S607", # partial executable paths
+  "RUF076", # autouse fixtures are an accepted pattern in tests
 ]
 
 [tool.mypy]
