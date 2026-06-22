@@ -13,7 +13,7 @@ class AirtableAPIClientMixin:
 
     @cached_property
     def airtable_client(self) -> AirtableClient:
-        """Get or create Airtable Client.
+        """Airtable client, created on first access.
 
         Returns:
             The Airtable Client instance

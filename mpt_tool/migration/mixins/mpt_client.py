@@ -14,7 +14,7 @@ class MPTAPIClientMixin:
 
     @cached_property
     def mpt_client(self) -> MPTClient:
-        """Get or create MPT API client from environment configurations.
+        """MPT API client from environment configurations, created on first access.
 
         Returns:
             The MPT API client instance
