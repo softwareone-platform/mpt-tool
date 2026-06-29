@@ -1,6 +1,7 @@
 from functools import cached_property
 
 from mpt_api_client import MPTClient
+from mpt_api_client.auth import BearerTokenAuthentication
 
 from mpt_tool.config import get_mpt_config
 
@@ -28,4 +29,6 @@ class MPTAPIClientMixin:
         if not api_token or not base_url:
             raise ValueError("MPT API token and base URL must be set in env variables")
 
-        return MPTClient.from_config(api_token=api_token, base_url=base_url)
+        return MPTClient.from_config(
+            authentication=BearerTokenAuthentication(api_token), base_url=base_url
+        )
