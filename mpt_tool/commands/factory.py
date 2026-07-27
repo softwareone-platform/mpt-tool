@@ -18,7 +18,7 @@ class CommandFactory:
     """Command factory to create the correct command."""
 
     @classmethod
-    def get_instance(cls, param_data: dict[str, bool | str | None]) -> BaseCommand:  # noqa: C901, WPS212
+    def get_instance(cls, param_data: dict[str, bool | str | None]) -> BaseCommand:  # ruff: ignore[complex-structure]  # noqa: WPS212
         """Get the correct command instance based on the parameter data.
 
         Args:

@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.21
+    rev: v0.16.0
     hooks:
       - id: ruff-check
       - id: ruff-format
@@ -30,11 +30,11 @@ repos:
           [
             flake8-aaa==0.17.*,
             flake8-pyproject==1.2.*,
-            wemake-python-styleguide==1.6.*,
+            wemake-python-styleguide==1.7.*,
           ]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.2.0
+    rev: v2.3.0
     hooks:
       - id: mypy
         args: ["--config-file=pyproject.toml", "."]
