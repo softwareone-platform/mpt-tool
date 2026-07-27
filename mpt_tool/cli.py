@@ -18,11 +18,11 @@ def callback() -> None:
 @app.command("migrate")
 def migrate(  # noqa: WPS211
     ctx: typer.Context,
-    check: Annotated[  # noqa: FBT002
+    check: Annotated[  # ruff: ignore[boolean-default-value-positional-argument]
         bool, typer.Option("--check", help="Check for duplicate migration_id in migrations.")
     ] = False,
-    data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # noqa: FBT002
-    schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # noqa: FBT002
+    data: Annotated[bool, typer.Option("--data", help="Run data migrations.")] = False,  # ruff: ignore[boolean-default-value-positional-argument]
+    schema: Annotated[bool, typer.Option("--schema", help="Run schema migrations.")] = False,  # ruff: ignore[boolean-default-value-positional-argument]
     manual: Annotated[
         str | None,
         typer.Option(
@@ -31,7 +31,7 @@ def migrate(  # noqa: WPS211
             metavar="MIGRATION_ID",
         ),
     ] = None,
-    init: Annotated[  # noqa: FBT002
+    init: Annotated[  # ruff: ignore[boolean-default-value-positional-argument]
         bool, typer.Option("--init", help="Initialize migration tool resources.")
     ] = False,
     new_data: Annotated[
@@ -50,7 +50,7 @@ def migrate(  # noqa: WPS211
             help="Scaffold a new schema migration script with the provided filename.",
         ),
     ] = None,
-    list: Annotated[bool, typer.Option("--list", help="List all migrations.")] = False,  # noqa: A002, FBT002
+    list: Annotated[bool, typer.Option("--list", help="List all migrations.")] = False,  # ruff: ignore[builtin-argument-shadowing, boolean-default-value-positional-argument]
     migration_id: Annotated[
         str | None, typer.Argument(help="Optional migration ID for --data or --schema.")
     ] = None,

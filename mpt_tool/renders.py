@@ -12,7 +12,7 @@ class MigrationRender:
     def __init__(self, migration_items: list[MigrationListItem]):
         self.migration_items = migration_items
 
-    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:  # noqa: PLW3201
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:  # ruff: ignore[bad-dunder-method-name]
         table = Table(show_lines=True, title_justify="center")
         for field in self._fields:
             table.add_column(field, no_wrap=True, min_width=len(field))
