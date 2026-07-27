@@ -644,7 +644,7 @@ dev = [
 requires-dist = [
     { name = "mpt-api-client", specifier = "==6.3.*" },
     { name = "pyairtable", specifier = "==3.4.*" },
-    { name = "typer", specifier = "==0.26.*" },
+    { name = "typer", specifier = "==0.27.*" },
 ]
 
 [package.metadata.requires-dev]
@@ -862,7 +862,7 @@ wheels = [
 
 [[package]]
 name = "pyairtable"
-version = "3.4.0"
+version = "3.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "inflection" },
@@ -871,9 +871,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9b/0c/4840b278c8e7b6e77c9eb2970b32b5960fb2405652e213300de1bc0c5b58/pyairtable-3.4.0.tar.gz", hash = "sha256:ba600193148948c10009e9e4449491909a7da8ba94bc8bfaaf8646b0ee8c03ca", size = 153956, upload-time = "2026-06-03T00:04:48.039Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c7/6c/efa2c21036ca2156dad1e0005aec9f50cd2fd2d3d8698c1c008fdcfb5e4e/pyairtable-3.4.2.tar.gz", hash = "sha256:6a9174d43800966660547e07d00736b3a0fdef75b5087b76ee8ba0e809c042ee", size = 154121, upload-time = "2026-07-26T01:43:51.876Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/d9/faca38a085e21d4a297c533735795ea3d76bba406650f389f3cb0f75aa43/pyairtable-3.4.0-py2.py3-none-any.whl", hash = "sha256:d12667e222205036bd26428af26db147fd35db2d25fa2485eec7c54f7dcb8c50", size = 103978, upload-time = "2026-06-03T00:04:46.468Z" },
+    { url = "https://files.pythonhosted.org/packages/94/7a/5119063ba9bc557b55991746b4f44618857eeb444dfc44d4014472947666/pyairtable-3.4.2-py2.py3-none-any.whl", hash = "sha256:398231594ec0b1c317d2362f403e5741cf4fa948eb546ddfc8a7cc23c9680223", size = 103973, upload-time = "2026-07-26T01:43:50.405Z" },
 ]
 
 [[package]]
@@ -1197,7 +1197,7 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.26.8"
+version = "0.27.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
@@ -1205,9 +1205,9 @@ dependencies = [
     { name = "rich" },
     { name = "shellingham" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7c/f7/68adc395201b20b872d68e975386832e8005ffeacedd43a1d837a32815be/typer-0.26.8.tar.gz", hash = "sha256:c244a6bd558886fe3f8780efb6bdd28bb9aff005a94eedebaa5cb32926fe2f7e", size = 202097, upload-time = "2026-06-26T09:22:45.705Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/78/fda3361b56efc27944f24225f6ecd13d96d6fcfe37bd0eb34e2f4c63f9fc/typer-0.27.0.tar.gz", hash = "sha256:629bd12ea5d13a17148125d9a264f949eb171fb3f120f9b04d85873cab054fa5", size = 203430, upload-time = "2026-07-15T19:21:07.007Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/87/b9fd69c92c6102a066e1b86a35243f53e70bd4c709f2a26d9f4fee4f4dc0/typer-0.26.8-py3-none-any.whl", hash = "sha256:3512ca79ac5c11113414b36e80281b872884477722440691c89d1112e321a49c", size = 122564, upload-time = "2026-06-26T09:22:44.72Z" },
+    { url = "https://files.pythonhosted.org/packages/40/03/26a383c9e58c213199d1aad1c3d353cfc22d4444ec6d2c0bf8ad02523843/typer-0.27.0-py3-none-any.whl", hash = "sha256:6f4b27631e47f077871b7dc30e933ec0131c1390fbe0e387ea5574b5bac9ccf1", size = 122716, upload-time = "2026-07-15T19:21:05.553Z" },
 ]
 
 [[package]]
