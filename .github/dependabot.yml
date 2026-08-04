@@ -17,6 +17,12 @@ updates:
       prefix: "deps"
       include: "scope"
     open-pull-requests-limit: 5
+    ignore:
+      # Extensions install mpt-tool alongside mpt-extension-sdk, whose mrok
+      # dependency requires typer <0.27; a newer typer here makes the extension
+      # resolution unsatisfiable. Ignore until mrok lifts the cap.
+      - dependency-name: "typer"
+        versions: [">=0.27"]
   - package-ecosystem: "docker"
     directory: "/"
     schedule:

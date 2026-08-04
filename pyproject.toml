@@ -10,7 +10,10 @@ license = {text = "Apache-2.0 license"}
 dependencies = [
   "mpt-api-client==6.4.*",
   "pyairtable==3.4.*",
-  "typer==0.27.*",
+  # Capped at 0.26 because extensions install mpt-tool alongside
+  # mpt-extension-sdk, whose mrok dependency requires typer <0.27. A newer typer
+  # here makes the extension resolution unsatisfiable.
+  "typer==0.26.*",
 ]
 
 [project.scripts]
