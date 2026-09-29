@@ -25,6 +25,18 @@ The default development model for this repository is Docker-based.
 - Use `make run` to open a container with `mpt-service-cli` available.
 - Use `make bash` when you need an interactive shell inside the app container.
 
+## Claude Code Settings
+
+The repository commits a shared project settings file,
+[`.claude/settings.json`](../.claude/settings.json).
+
+Only `.claude/settings.json` is tracked. Keep personal settings in
+`.claude/settings.local.json` or other files under `.claude/`, which
+[`.gitignore`](../.gitignore) keeps out of version control. See the Claude Code
+[settings](https://code.claude.com/docs/en/settings#settings-files-and-who-they-affect)
+and [attribution](https://code.claude.com/docs/en/settings-reference#attribution)
+references for details.
+
 ## Code Organization Expectations
 
 Repository-specific expectations:
