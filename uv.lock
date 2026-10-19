@@ -661,15 +661,15 @@ wheels = [
 
 [[package]]
 name = "mpt-api-client"
-version = "6.4.0"
+version = "6.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "httpx-retries" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/75/91/51679b504d7e95c84c8207cdcd7556c6d3daa2174758fefc0ced78a787a6/mpt_api_client-6.4.0.tar.gz", hash = "sha256:d51142471862c0b9faa4339c68b193f2bcf94ae63ce523ed00115d371770be83", size = 67099, upload-time = "2026-07-30T16:38:16.622Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/62/a3/3a81041e85e63d984dde25e4d8ff9787c4fd93ee77ed92e5389474f46451/mpt_api_client-6.5.0.tar.gz", hash = "sha256:d90c39ce40ebfdbf91d6bc33123e57cf713034943a90524e906354b9406a04bb", size = 86632, upload-time = "2026-10-05T12:36:45.408Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a2/0c/b91b41941c7d9035b6a3cb5dba2279f274a339b3eb470a0cb77a5113bad9/mpt_api_client-6.4.0-py3-none-any.whl", hash = "sha256:6ac8bd1ce5a48cfa3b98ba9e70b40579cca4467a6fa36c502449b16512f1257c", size = 149517, upload-time = "2026-07-30T16:38:15.542Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/17/5fd142dc824ce76b1d0242301ac72ab1b10a0ff744e13af5378d4880163c/mpt_api_client-6.5.0-py3-none-any.whl", hash = "sha256:421037abb8ee4eaab54e867a6fca547d96f4ef66060eab0f697e83f548d74b70", size = 176147, upload-time = "2026-10-05T12:36:44.379Z" },
 ]
 
 [[package]]
@@ -703,7 +703,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mpt-api-client", specifier = "==6.4.*" },
+    { name = "mpt-api-client", specifier = "==6.5.*" },
     { name = "pyairtable", specifier = "==3.5.*" },
     { name = "typer", specifier = "==0.26.*" },
 ]
