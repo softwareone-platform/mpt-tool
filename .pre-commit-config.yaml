@@ -43,4 +43,4 @@ repos:
           - mpt_api_client==5.0.*
           - typer==0.21.*
           - types-requests==2.33.*
-          - pyairtable==3.3.*
+          - pyairtable==3.5.*

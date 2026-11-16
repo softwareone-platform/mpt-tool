@@ -1033,7 +1033,7 @@ wheels = [
 
 [[package]]
 name = "pyairtable"
-version = "3.5.0.post1"
+version = "3.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "inflection" },
@@ -1042,9 +1042,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/5c/52d09ea860b8d53aa87133019dd506daa33e9ee4b383b413aa3d46d3e20a/pyairtable-3.5.0.post1.tar.gz", hash = "sha256:ebcf30d0c2ec2e6e676ab53a0d6fb6d18403f8f1630e2180d88cda2db02a1c16", size = 157002, upload-time = "2026-09-24T14:44:35.555Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/aa/da/f7a6baf49d26ad5569cea5ce18ae79f11cb015443ef856becea95ce730a6/pyairtable-3.5.1.tar.gz", hash = "sha256:a38e03295ddda2d4aec6c91dc35ca8420b6e364e6c14c854de9cf01f78a6a88a", size = 157570, upload-time = "2026-11-08T05:46:02.612Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/00/4203e17570fbe0aeaee76abd0628f350d61da24b79fd2710a5063bc26604/pyairtable-3.5.0.post1-py2.py3-none-any.whl", hash = "sha256:37deec487092adc36f67d84d779fecb93e0a5818881b20ea86205a4c5bc1e341", size = 104950, upload-time = "2026-09-24T14:44:33.953Z" },
+    { url = "https://files.pythonhosted.org/packages/25/76/ddf0885333904730891ea5bf616c6bb508d9e08df08fb5838a0b1f80da04/pyairtable-3.5.1-py2.py3-none-any.whl", hash = "sha256:ae6aa4443a71c25e08e916d921c12c83d6c7ba846a1af4a60cdbed69dcf392e6", size = 104919, upload-time = "2026-11-08T05:46:00.834Z" },
 ]
 
 [[package]]
